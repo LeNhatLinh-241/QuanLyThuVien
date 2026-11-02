@@ -1,3 +1,8 @@
 ﻿bin/
 obj/
 .idea/
+# SQLite local database files
+*.db
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

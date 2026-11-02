@@ -13,4 +13,10 @@
       <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.14" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="GUI\FormMain.cs">
+        <SubType>Form</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>
