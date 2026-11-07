@@ -1,0 +1,103 @@
+using Dapper;
+using QuanLyThuVien.DTO;
+
+namespace QuanLyThuVien.DAO;
+
+public class BookCopyDAO
+{
+    private readonly DatabaseConnect _databaseConnect = new();
+
+    public List<BookCopyDTO> GetByTitleId(int titleId)
+    {
+        using var connection = _databaseConnect.GetConnection();
+        return connection.Query<BookCopyDTO>(
+            @"SELECT CopyID, TitleID, TrangThai
+              FROM BookCopies
+              WHERE TitleID = @TitleID
+              ORDER BY CopyID",
+            new { TitleID = titleId }).ToList();
+    }
+
+    public List<BookCopyDTO> AddCopies(int titleId, int quantity)
+    {
+        if (titleId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(titleId), "Mã đầu sách không hợp lệ.");
+        }
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Số lượng sách phải lớn hơn 0.");
+        }
+
+        using var connection = _databaseConnect.GetConnection();
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        var titleExists = connection.ExecuteScalar<int>(
+            @"SELECT COUNT(1)
+              FROM BookTitles
+              WHERE TitleID = @TitleID AND IsDeleted = 0",
+            new { TitleID = titleId },
+            transaction);
+
+        if (titleExists == 0)
+        {
+            throw new ArgumentException("Đầu sách không tồn tại hoặc đã bị xóa.", nameof(titleId));
+        }
+
+        var existingCopyIds = connection.Query<string>(
+            "SELECT CopyID FROM BookCopies WHERE TitleID = @TitleID",
+            new { TitleID = titleId },
+            transaction).ToHashSet(StringComparer.Ordinal);
+
+        var addedCopies = new List<BookCopyDTO>();
+        var copyNumber = 1;
+
+        for (var i = 0; i < quantity; i++)
+        {
+            string copyId;
+            do
+            {
+                copyId = $"SACH{titleId:D2}_{copyNumber}";
+                copyNumber++;
+            }
+            while (existingCopyIds.Contains(copyId));
+
+            connection.Execute(
+                @"INSERT INTO BookCopies (CopyID, TitleID, TrangThai)
+                  VALUES (@CopyID, @TitleID, 0)",
+                new
+                {
+                    CopyID = copyId,
+                    TitleID = titleId
+                },
+                transaction);
+
+            existingCopyIds.Add(copyId);
+            addedCopies.Add(new BookCopyDTO
+            {
+                CopyID = copyId,
+                TitleID = titleId,
+                TrangThai = 0
+            });
+        }
+
+        transaction.Commit();
+        return addedCopies;
+    }
+
+    public bool UpdateStatus(string copyId, int status)
+    {
+        using var connection = _databaseConnect.GetConnection();
+        return connection.Execute(
+            @"UPDATE BookCopies
+              SET TrangThai = @TrangThai
+              WHERE CopyID = @CopyID",
+            new
+            {
+                CopyID = copyId,
+                TrangThai = status
+            }) > 0;
+    }
+}
