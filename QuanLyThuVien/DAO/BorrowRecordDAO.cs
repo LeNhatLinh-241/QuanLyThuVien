@@ -1,8 +1,4 @@
-using System.Data.Common;
 using QuanLyThuVien.DTO;
-using System;
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
 namespace QuanLyThuVien.DAO;
 
 public class BorrowRecordDAO
