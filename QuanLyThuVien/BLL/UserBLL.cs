@@ -1,3 +1,4 @@
+using System.Data;
 using QuanLyThuVien.DAO;
 using QuanLyThuVien.DTO;
 
@@ -47,4 +48,15 @@ public class UserBLL
     {
         return userDao.DeleteUser(id);
     }
+
+    public DataTable LayBaoCaoQuaHan()
+    {
+        return userDao.GetOverdueUsers();
+    }
+
+    public DataTable LayBaoCaoDangMuon()
+    {
+        return userDao.GetBorrowedBooks();
+    }
+    
 }

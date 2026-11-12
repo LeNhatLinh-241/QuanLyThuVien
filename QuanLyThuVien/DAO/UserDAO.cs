@@ -1,3 +1,4 @@
+using System.Data;
 using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.DAO;
@@ -85,6 +86,74 @@ public class UserDAO
                 return command.ExecuteNonQuery() > 0;
             }
         }
+    }
+
+    public DataTable GetOverdueUsers()
+    {
+        DataTable dt = new DataTable();
+        using (var connection = db.GetConnection())
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT 
+                        u.ID AS MaDocGia, 
+                        u.HoTen AS TenDocGia, 
+                        u.SoDienThoai, 
+                        bt.TenSach, 
+                        br.NgayMuon, 
+                        br.NgayHanTra,
+                        CAST(julianday(date('now', 'localtime')) - julianday(br.NgayHanTra) AS INTEGER) AS SoNgayTre
+                    FROM BorrowRecords br
+                    JOIN Users u ON br.UserID = u.ID
+                    JOIN BookCopies bc ON br.CopyID = bc.CopyID
+                    JOIN BookTitles bt ON bc.TitleID = bt.TitleID
+                    WHERE br.TrangThai = 0 
+                      AND date(br.NgayHanTra) < date('now', 'localtime')
+                    ORDER BY SoNgayTre DESC";
+                using (var reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                    
+                }
+            }
+        }
+
+        return dt;
+
+
+    }
+
+    public DataTable GetBorrowedBooks()
+    {
+        DataTable dt = new DataTable();
+        using (var connection = db.GetConnection())
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT 
+                        br.CopyID AS MaVach, 
+                        bt.TenSach, 
+                        u.HoTen AS NguoiMuon, 
+                        br.NgayMuon, 
+                        br.NgayHanTra
+                    FROM BorrowRecords br
+                    JOIN Users u ON br.UserID = u.ID
+                    JOIN BookCopies bc ON br.CopyID = bc.CopyID
+                    JOIN BookTitles bt ON bc.TitleID = bt.TitleID
+                    WHERE br.TrangThai = 0
+                    ORDER BY br.NgayMuon DESC";
+                using (var reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                }
+            }
+        }
+
+        return dt;
     }
     
     
