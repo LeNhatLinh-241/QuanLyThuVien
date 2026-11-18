@@ -23,9 +23,9 @@ namespace QuanLyThuVien.UI.UserControls
                 RowCount = 3,
                 Padding = new Padding(12, 10, 12, 8)
             };
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
+            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
             page.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 55));
 
             var header = new Panel
             {
@@ -35,10 +35,10 @@ namespace QuanLyThuVien.UI.UserControls
             };
             header.Controls.Add(new Label
             {
-                Text = "QUẢN LÝ KHO SÁCH",
+                Text = "QUẢN LÝ KHO SÁCH & QUẢN LÝ MÃ VẠCH",
                 Dock = DockStyle.Left,
-                Width = 400,
-                Padding = new Padding(14, 0, 0, 0),
+                Width = 850,
+                Padding = new Padding(18, 0, 0, 0),
                 TextAlign = ContentAlignment.MiddleLeft,
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(30, 41, 59)
@@ -47,7 +47,7 @@ namespace QuanLyThuVien.UI.UserControls
             {
                 Text = $"Xin chào: Thủ thư  |  Ngày: {DateTime.Now:dd/MM/yyyy}",
                 Dock = DockStyle.Right,
-                Width = 300,
+                Width = 600,
                 Padding = new Padding(0, 0, 14, 0),
                 TextAlign = ContentAlignment.MiddleRight,
                 ForeColor = Color.FromArgb(100, 116, 139)
@@ -61,7 +61,7 @@ namespace QuanLyThuVien.UI.UserControls
                 Padding = new Padding(0, 10, 0, 8),
                 BackColor = Color.Transparent
             };
-            content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 270));
+            content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 470));
             content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
             var categoriesPanel = CreateCategoriesPanel();
@@ -77,9 +77,9 @@ namespace QuanLyThuVien.UI.UserControls
             };
             footer.Controls.Add(new Label
             {
-                Text = "Quản lý đầu sách  |  Dữ liệu minh họa",
+                Text = "Sẵn sàng  |  Dữ liệu đã đồng bộ",
                 Dock = DockStyle.Left,
-                Width = 300,
+                Width = 600,
                 Padding = new Padding(8, 0, 0, 0),
                 TextAlign = ContentAlignment.MiddleLeft,
                 ForeColor = Color.FromArgb(100, 116, 139)
@@ -118,12 +118,12 @@ namespace QuanLyThuVien.UI.UserControls
                 RowCount = 4,
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 22));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30 ));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
-            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH"), 0, 0);
+            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH (CÂY PHÂN CẤP)"), 0, 0);
             layout.Controls.Add(new Label
             {
                 Text = "4 nhóm",
@@ -138,33 +138,72 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.FromArgb(248, 250, 252),
-                ForeColor = Color.FromArgb(30, 41, 59),
+                ForeColor = Color.FromArgb(51, 65, 85),
                 Font = new Font("Segoe UI", 9F),
                 HideSelection = false,
+                FullRowSelect = true,
                 ShowLines = true,
                 ShowPlusMinus = true,
                 ShowRootLines = true,
-                ItemHeight = 24
+                ItemHeight = 40,
+                Indent = 18
             };
             var technology = tree.Nodes.Add("Công nghệ thông tin");
             technology.Nodes.Add("Lập trình C#");
             technology.Nodes.Add("Cơ sở dữ liệu");
             tree.Nodes.Add("Kinh tế");
             tree.Nodes.Add("Ngoại ngữ");
+            
             technology.Expand();
             tree.SelectedNode = technology;
             layout.Controls.Add(tree, 0, 2);
-
+            
             var buttons = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(0, 4, 0, 0)
+                AutoScroll = false,
+                Padding = new Padding(0, 3, 0, 0),
+                Margin = Padding.Empty
             };
-            buttons.Controls.Add(CreateButton("+ Thêm", Color.FromArgb(37, 99, 235), Color.White, 76));
-            buttons.Controls.Add(CreateButton("Sửa", Color.White, Color.FromArgb(30, 41, 59), 58));
-            buttons.Controls.Add(CreateButton("Xóa", Color.White, Color.FromArgb(220, 38, 38), 58));
+            
+            var btnThem = CreateButton(
+                "Thêm",
+                Color.FromArgb(37, 99, 235),
+                Color.White,
+                120
+            );
+            btnThem.Height = 48;
+
+            var btnSua = CreateButton(
+                "Sửa",
+                Color.White,
+                Color.FromArgb(30, 41, 59),
+                90
+            );
+            btnSua.Height = 48;
+
+            var btnXoa = CreateButton(
+                "Xóa thể loại",
+                Color.White,
+                Color.FromArgb(220, 38, 38),
+                200
+            );
+            
+            foreach (Button btn in new[] { btnThem, btnSua, btnXoa })
+            {
+                btn.Height = 48;
+                btn.Margin = new Padding(2);
+                btn.Padding = new Padding(0);
+            }
+            
+            buttons.Controls.Add(btnThem);
+            buttons.Controls.Add(btnSua);
+            buttons.Controls.Add(btnXoa);
+
+            layout.Controls.Add(buttons, 0, 3);
+
             layout.Controls.Add(buttons, 0, 3);
 
             panel.Controls.Add(layout);
@@ -187,9 +226,9 @@ namespace QuanLyThuVien.UI.UserControls
                 RowCount = 4,
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 57));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             var titleHeader = new Panel { Dock = DockStyle.Fill };
@@ -198,7 +237,7 @@ namespace QuanLyThuVien.UI.UserControls
             {
                 Text = "Đang chọn: SACH01",
                 Dock = DockStyle.Right,
-                Width = 180,
+                Width = 300,
                 TextAlign = ContentAlignment.MiddleRight,
                 ForeColor = Color.FromArgb(100, 116, 139)
             });
@@ -210,15 +249,41 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(0, 4, 0, 0)
+                Padding = new Padding(0, 2, 0, 0)
             };
-            buttons.Controls.Add(CreateButton("+ Thêm & Sinh mã vạch", Color.FromArgb(37, 99, 235), Color.White, 205));
-            buttons.Controls.Add(CreateButton("Sửa", Color.White, Color.FromArgb(30, 41, 59), 70));
-            buttons.Controls.Add(CreateButton("Xóa", Color.White, Color.FromArgb(220, 38, 38), 66));
+            var btnThem = CreateButton(
+                "+ Thêm & Sinh mã vạch",
+                Color.FromArgb(37, 99, 235),
+                Color.White,
+                305
+            );
+            btnThem.Height = 50;
+            
+            var btnSua = CreateButton(
+                "Sửa",
+                Color.White,
+                Color.FromArgb(30, 41, 59),
+                70
+            );
+            btnSua.Height = 48;
+            
+            var btnXoa = CreateButton(
+                "Xóa",
+                Color.White,
+                Color.FromArgb(220, 38, 38),
+                66
+            );
+            btnXoa.Height = 48;
+            
+            buttons.Controls.Add(btnThem);
+            buttons.Controls.Add(btnSua);
+            buttons.Controls.Add(btnXoa);
+            
             layout.Controls.Add(buttons, 0, 2);
-
+            
             dgvDanhSachSach = CreateBookTitlesGrid();
             layout.Controls.Add(dgvDanhSachSach, 0, 3);
+
             panel.Controls.Add(layout);
             return panel;
         }
@@ -269,7 +334,7 @@ namespace QuanLyThuVien.UI.UserControls
                 Margin = new Padding(2, 0, 5, 0),
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             layout.Controls.Add(new Label
             {
@@ -300,8 +365,8 @@ namespace QuanLyThuVien.UI.UserControls
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 EnableHeadersVisualStyles = false,
-                ColumnHeadersHeight = 32,
-                RowTemplate = { Height = 30 },
+                ColumnHeadersHeight = 50,
+                RowTemplate = { Height = 45 },
                 Font = new Font("Segoe UI", 9F),
                 ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
                 {
