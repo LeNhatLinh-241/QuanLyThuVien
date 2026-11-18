@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using QuanLyThuVien.DTO;
 
@@ -46,6 +47,27 @@ public class BookCopyDAO
             throw new ArgumentException("Đầu sách không tồn tại hoặc đã bị xóa.", nameof(titleId));
         }
 
+        var addedCopies = AddCopiesInTransaction(connection, transaction, titleId, quantity);
+        transaction.Commit();
+        return addedCopies;
+    }
+
+    internal List<BookCopyDTO> AddCopiesInTransaction(
+        IDbConnection connection,
+        IDbTransaction transaction,
+        int titleId,
+        int quantity)
+    {
+        if (titleId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(titleId), "Mã đầu sách không hợp lệ.");
+        }
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Số lượng sách phải lớn hơn 0.");
+        }
+
         var existingCopyIds = connection.Query<string>(
             "SELECT CopyID FROM BookCopies WHERE TitleID = @TitleID",
             new { TitleID = titleId },
@@ -83,7 +105,6 @@ public class BookCopyDAO
             });
         }
 
-        transaction.Commit();
         return addedCopies;
     }
 

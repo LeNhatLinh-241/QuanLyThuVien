@@ -6,6 +6,7 @@ namespace QuanLyThuVien.DAO;
 public class BookTitleDAO
 {
     private readonly DatabaseConnect _databaseConnect = new();
+    private readonly BookCopyDAO _bookCopyDAO = new();
 
     public List<BookTitleDTO> GetAll()
     {
@@ -42,6 +43,37 @@ public class BookTitleDAO
                 bookTitle.CategoryID
             });
         return connection.ExecuteScalar<int>("SELECT last_insert_rowid();");
+    }
+
+    public (int TitleId, List<BookCopyDTO> Copies) InsertWithCopies(BookTitleDTO bookTitle, int quantity)
+    {
+        using var connection = _databaseConnect.GetConnection();
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        connection.Execute(
+            @"INSERT INTO BookTitles (TenSach, TacGia, GiaTien, CategoryID)
+              VALUES (@TenSach, @TacGia, @GiaTien, @CategoryID)",
+            new
+            {
+                bookTitle.TenSach,
+                bookTitle.TacGia,
+                bookTitle.GiaTien,
+                bookTitle.CategoryID
+            },
+            transaction);
+
+        var titleId = connection.ExecuteScalar<int>(
+            "SELECT last_insert_rowid();",
+            transaction: transaction);
+        var copies = _bookCopyDAO.AddCopiesInTransaction(
+            connection,
+            transaction,
+            titleId,
+            quantity);
+
+        transaction.Commit();
+        return (titleId, copies);
     }
 
     public bool Update(BookTitleDTO bookTitle)

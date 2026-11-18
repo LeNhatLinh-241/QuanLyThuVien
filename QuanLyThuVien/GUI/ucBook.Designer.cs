@@ -7,6 +7,14 @@ namespace QuanLyThuVien.UI.UserControls
     {
         private DataGridView dgvDanhSachSach = null!;
         private DataGridView dgvCuonSachVatLy = null!;
+        private TextBox txtTenDauSach = null!;
+        private TextBox txtTacGia = null!;
+        private TextBox txtGiaTien = null!;
+        private TextBox txtSoLuongNhap = null!;
+        private ComboBox cboTheLoai = null!;
+        private Button btnThemDauSach = null!;
+        private Label lblPhysicalCopiesHeader = null!;
+        private Label lblPhysicalCopiesSummary = null!;
 
         private void InitializeComponent()
         {
@@ -274,13 +282,14 @@ namespace QuanLyThuVien.UI.UserControls
                 WrapContents = false,
                 Padding = new Padding(0, 2, 0, 0)
             };
-            var btnThem = CreateButton(
+            btnThemDauSach = CreateButton(
                 "+ Thêm & Sinh mã vạch",
                 Color.FromArgb(37, 99, 235),
                 Color.White,
                 305
             );
-            btnThem.Height = 50;
+            btnThemDauSach.Height = 50;
+            btnThemDauSach.Click += AddBookTitleAndCopies;
             
             var btnSua = CreateButton(
                 "Sửa",
@@ -298,7 +307,7 @@ namespace QuanLyThuVien.UI.UserControls
             );
             btnXoa.Height = 48;
             
-            buttons.Controls.Add(btnThem);
+            buttons.Controls.Add(btnThemDauSach);
             buttons.Controls.Add(btnSua);
             buttons.Controls.Add(btnXoa);
             
@@ -342,14 +351,15 @@ namespace QuanLyThuVien.UI.UserControls
 
             var header = new Panel { Dock = DockStyle.Fill };
             header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ - BookCopies"));
-            header.Controls.Add(new Label
+            lblPhysicalCopiesHeader = new Label
             {
                 Text = "Mã vạch sinh tự động cho SACH01",
                 Dock = DockStyle.Right,
                 Width = 480,
                 TextAlign = ContentAlignment.MiddleRight,
                 ForeColor = Color.FromArgb(100, 116, 139)
-            });
+            };
+            header.Controls.Add(lblPhysicalCopiesHeader);
             layout.Controls.Add(header, 0, 0);
 
             dgvCuonSachVatLy = CreatePhysicalCopiesGrid();
@@ -365,14 +375,15 @@ namespace QuanLyThuVien.UI.UserControls
             };
             pagination.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
             pagination.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize, 120));
-            pagination.Controls.Add(new Label
+            lblPhysicalCopiesSummary = new Label
             {
                 Text = "Hiển thị 1–4 / 10 bản |1 đang mượn |1 mất/hỏng",
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleLeft,
                 ForeColor = Color.FromArgb(100, 116, 139),
                 Font = new Font("Segoe UI", 8F)
-            }, 0, 0);
+            };
+            pagination.Controls.Add(lblPhysicalCopiesSummary, 0, 0);
 
             var pageControls = new FlowLayoutPanel
             {
@@ -418,7 +429,8 @@ namespace QuanLyThuVien.UI.UserControls
             };
         }
 
-        private static Control CreateBookFields()
+       
+        private Control CreateBookFields()
         {
             var fields = new TableLayoutPanel
             {
@@ -428,31 +440,66 @@ namespace QuanLyThuVien.UI.UserControls
                 BackColor = Color.White,
                 Margin = Padding.Empty
             };
+
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 23));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18));
-
-            fields.Controls.Add(CreateField("Tên đầu sách", new TextBox { Text = "Lập trình C# căn bản" }), 0, 0);
-            fields.Controls.Add(CreateField("Tác giả", new TextBox { Text = "Phạm Hữu Khang" }), 1, 0);
-            fields.Controls.Add(CreateField("Giá tiền", new TextBox { Text = "120.000" }), 2, 0);
-
-            var category = new ComboBox
+            
+            txtTenDauSach = new TextBox
             {
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Text = "Lập trình C# căn bản"
             };
-            category.Items.AddRange(new object[]
+
+            txtTacGia = new TextBox
             {
-                "Công nghệ thông tin / Lập trình C#",
-                "Kinh tế",
-                "Ngoại ngữ"
-            });
-            category.SelectedIndex = 0;
-            fields.Controls.Add(CreateField("Thể loại", category), 3, 0);
-            fields.Controls.Add(CreateField("Số lượng nhập", new TextBox { Text = "10" }), 4, 0);
+                Text = "Phạm Hữu Khang"
+            };
+
+            txtGiaTien = new TextBox
+            {
+                Text = "120.000"
+            };
+
+            txtSoLuongNhap = new TextBox
+            {
+                Text = "10"
+            };
+            
+            cboTheLoai = new ComboBox
+            {
+                Name = "cboTheLoai",
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                DrawMode = DrawMode.Normal,
+                FlatStyle = FlatStyle.Standard,
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(30, 41, 59),
+                Font = new Font("Segoe UI", 9F),
+                IntegralHeight = true,
+                DropDownHeight = 150,
+                MaxDropDownItems = 5,
+                Dock = DockStyle.Fill
+            };
+
+            fields.Controls.Add(
+                CreateField("Tên đầu sách", txtTenDauSach), 0, 0);
+
+            fields.Controls.Add(
+                CreateField("Tác giả", txtTacGia), 1, 0);
+
+            fields.Controls.Add(
+                CreateField("Giá tiền", txtGiaTien), 2, 0);
+
+            fields.Controls.Add(
+                CreateField("Thể loại", cboTheLoai), 3, 0);
+
+            fields.Controls.Add(
+                CreateField("Số lượng nhập", txtSoLuongNhap), 4, 0);
+
             return fields;
         }
+
 
         private static Control CreateField(string label, Control editor)
         {
@@ -473,8 +520,17 @@ namespace QuanLyThuVien.UI.UserControls
                 TextAlign = ContentAlignment.MiddleLeft,
                 ForeColor = Color.FromArgb(51, 65, 85)
             }, 0, 0);
-            editor.Dock = DockStyle.Fill;
             editor.Margin = new Padding(0, 0, 0, 2);
+
+            if (editor is ComboBox combo)
+            {
+                combo.Dock = DockStyle.Fill;
+                combo.DropDownStyle = ComboBoxStyle.DropDownList;
+            }
+            else
+            {
+                editor.Dock = DockStyle.Fill;
+            }
             layout.Controls.Add(editor, 0, 1);
             return layout;
         }

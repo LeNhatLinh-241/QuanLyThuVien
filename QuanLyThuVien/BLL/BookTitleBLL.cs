@@ -29,6 +29,18 @@ public class BookTitleBLL
         return _bookTitleDAO.Insert(bookTitle);
     }
 
+    public (int TitleId, List<BookCopyDTO> Copies) AddWithCopies(BookTitleDTO bookTitle, int quantity)
+    {
+        ValidateBookTitle(bookTitle);
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Số lượng sách phải lớn hơn 0.");
+        }
+
+        return _bookTitleDAO.InsertWithCopies(bookTitle, quantity);
+    }
+
     public bool Update(BookTitleDTO bookTitle)
     {
         ValidateBookTitle(bookTitle);
