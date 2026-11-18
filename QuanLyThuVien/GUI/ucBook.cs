@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace QuanLyThuVien.UI.UserControls
@@ -32,6 +33,19 @@ namespace QuanLyThuVien.UI.UserControls
                 "SACH05", "Dế Mèn phiêu lưu ký", "Tô Hoài",
                 "Văn học", "45.000", "20"
             );
+
+            for (var copyNumber = 1; copyNumber <= 4; copyNumber++)
+            {
+                var rowIndex = dgvCuonSachVatLy.Rows.Add(
+                    $"SACH01_{copyNumber}",
+                    "SACH01",
+                    "Sẵn sàng trên kệ",
+                    "0",
+                    "Kệ A1-01"
+                );
+                dgvCuonSachVatLy.Rows[rowIndex].Cells[2].Style.ForeColor =
+                    Color.FromArgb(22, 163, 74);
+            }
 
             dgvDanhSachSach.Rows[0].Selected = true;
         }

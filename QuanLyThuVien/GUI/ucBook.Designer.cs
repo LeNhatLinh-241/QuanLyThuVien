@@ -6,6 +6,7 @@ namespace QuanLyThuVien.UI.UserControls
     partial class ucBook
     {
         private DataGridView dgvDanhSachSach = null!;
+        private DataGridView dgvCuonSachVatLy = null!;
 
         private void InitializeComponent()
         {
@@ -215,21 +216,43 @@ namespace QuanLyThuVien.UI.UserControls
             var panel = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(10)
+                BackColor = Color.Transparent
             };
             var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 2,
+                BackColor = Color.Transparent,
+                Margin = Padding.Empty,
+                Padding = Padding.Empty
+                
+            };
+            layout.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 100)
+            );
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+
+            var titlePanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Padding = new Padding(10),
+                Margin = new Padding(0, 0, 0, 8)
+            };
+            var titleLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 4,
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 57));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 57));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             var titleHeader = new Panel { Dock = DockStyle.Fill };
             titleHeader.Controls.Add(CreateSectionTitle("ĐẦU SÁCH - BookTitles"));
@@ -241,8 +264,8 @@ namespace QuanLyThuVien.UI.UserControls
                 TextAlign = ContentAlignment.MiddleRight,
                 ForeColor = Color.FromArgb(100, 116, 139)
             });
-            layout.Controls.Add(titleHeader, 0, 0);
-            layout.Controls.Add(CreateBookFields(), 0, 1);
+            titleLayout.Controls.Add(titleHeader, 0, 0);
+            titleLayout.Controls.Add(CreateBookFields(), 0, 1);
 
             var buttons = new FlowLayoutPanel
             {
@@ -279,13 +302,120 @@ namespace QuanLyThuVien.UI.UserControls
             buttons.Controls.Add(btnSua);
             buttons.Controls.Add(btnXoa);
             
-            layout.Controls.Add(buttons, 0, 2);
+            titleLayout.Controls.Add(buttons, 0, 2);
             
             dgvDanhSachSach = CreateBookTitlesGrid();
-            layout.Controls.Add(dgvDanhSachSach, 0, 3);
+            titleLayout.Controls.Add(dgvDanhSachSach, 0, 3);
+
+            titlePanel.Controls.Add(titleLayout);
+            var physicalPanel = CreatePhysicalCopiesPanel();
+
+            physicalPanel.Dock = DockStyle.Fill;
+            physicalPanel.Margin = Padding.Empty;
+
+            layout.Controls.Add(titlePanel, 0, 0);
+            layout.Controls.Add(physicalPanel, 0, 1);
+            panel.Controls.Add(layout);
+            return panel;
+        }
+
+        private Control CreatePhysicalCopiesPanel()
+        {
+            var panel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Padding = new Padding(8),
+                Margin = Padding.Empty
+            };
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 3,
+                BackColor = Color.White
+            };
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+
+            var header = new Panel { Dock = DockStyle.Fill };
+            header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ - BookCopies"));
+            header.Controls.Add(new Label
+            {
+                Text = "Mã vạch sinh tự động cho SACH01",
+                Dock = DockStyle.Right,
+                Width = 480,
+                TextAlign = ContentAlignment.MiddleRight,
+                ForeColor = Color.FromArgb(100, 116, 139)
+            });
+            layout.Controls.Add(header, 0, 0);
+
+            dgvCuonSachVatLy = CreatePhysicalCopiesGrid();
+            layout.Controls.Add(dgvCuonSachVatLy, 0, 1);
+
+            var pagination = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.White,
+                Margin = Padding.Empty
+            };
+            pagination.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80));
+            pagination.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize, 120));
+            pagination.Controls.Add(new Label
+            {
+                Text = "Hiển thị 1–4 / 10 bản |1 đang mượn |1 mất/hỏng",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Font = new Font("Segoe UI", 8F)
+            }, 0, 0);
+
+            var pageControls = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                AutoSize = true,
+                Margin = Padding.Empty
+            };
+            pageControls.Controls.Add(CreatePageButton("‹ Trước", false));
+            pageControls.Controls.Add(new Label
+            {
+                Text = "1",
+                Width = 60,
+                Height = 40,
+                TextAlign = ContentAlignment.MiddleCenter,
+                BackColor = Color.FromArgb(37, 99, 235),
+                ForeColor = Color.White,
+                Margin = new Padding(2, 2, 2, 0)
+            });
+            pageControls.Controls.Add(CreatePageButton("Sau ›", true));
+            pagination.Controls.Add(pageControls, 1, 0);
+            layout.Controls.Add(pagination, 0, 2);
 
             panel.Controls.Add(layout);
             return panel;
+        }
+
+        private static Button CreatePageButton(string text, bool enabled)
+        {
+            return new Button
+            {
+                Text = text,
+                AutoSize = true,
+                Height = 40,
+                Enabled = enabled,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Font = new Font("Segoe UI", 8F),
+                Margin = new Padding(2, 2, 2, 0),
+                Cursor = Cursors.Hand
+            };
         }
 
         private static Control CreateBookFields()
@@ -366,7 +496,7 @@ namespace QuanLyThuVien.UI.UserControls
                 RowHeadersVisible = false,
                 EnableHeadersVisualStyles = false,
                 ColumnHeadersHeight = 50,
-                RowTemplate = { Height = 45 },
+                RowTemplate = { Height = 50 },
                 Font = new Font("Segoe UI", 9F),
                 ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
                 {
@@ -395,6 +525,54 @@ namespace QuanLyThuVien.UI.UserControls
             AddGridColumn(grid, "Thể loại", 19);
             AddGridColumn(grid, "Giá", 9);
             AddGridColumn(grid, "Nhập", 8);
+            return grid;
+        }
+
+        private static DataGridView CreatePhysicalCopiesGrid()
+        {
+            var grid = new DataGridView
+            {
+                Name = "dgvCuonSachVatLy",
+                Dock = DockStyle.Fill,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                MultiSelect = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                RowHeadersVisible = false,
+                EnableHeadersVisualStyles = false,
+                ColumnHeadersHeight = 50,
+                RowTemplate = { Height = 50 },
+                Font = new Font("Segoe UI", 8.5F),
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    BackColor = Color.FromArgb(248, 250, 252),
+                    ForeColor = Color.FromArgb(30, 41, 59),
+                    Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                    SelectionBackColor = Color.FromArgb(248, 250, 252),
+                    SelectionForeColor = Color.FromArgb(30, 41, 59)
+                },
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    ForeColor = Color.FromArgb(30, 41, 59),
+                    BackColor = Color.White,
+                    SelectionBackColor = Color.FromArgb(219, 234, 254),
+                    SelectionForeColor = Color.FromArgb(30, 41, 59),
+                    Padding = new Padding(3)
+                },
+                AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    BackColor = Color.FromArgb(248, 250, 252)
+                }
+            };
+            AddGridColumn(grid, "Mã vạch (CopyID)", 21);
+            AddGridColumn(grid, "TitleID", 17);
+            AddGridColumn(grid, "Trạng thái", 31);
+            AddGridColumn(grid, "Mã trạng thái", 15);
+            AddGridColumn(grid, "Ghi chú", 16);
             return grid;
         }
 
