@@ -155,6 +155,36 @@ public class UserDAO
 
         return dt;
     }
+
+    public UserDTO CheckLogin(string username, string password)
+    {
+        using (var connection = db.GetConnection())
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText =
+                    "SECLECT * FROM Users WHERE Username = @user AND Password = @pass AND IsActive = 1";
+                command.Parameters.AddWithValue("@user", username);
+                command.Parameters.AddWithValue("@pass", password);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new UserDTO()
+                        {
+                            ID = reader.GetInt32(0),
+                            Username = reader.GetString(1),
+                            Role = reader.GetString(3),
+                            HoTen = reader.GetString(4)
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
     
     
     

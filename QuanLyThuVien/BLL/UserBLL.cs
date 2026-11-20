@@ -58,5 +58,11 @@ public class UserBLL
     {
         return userDao.GetBorrowedBooks();
     }
+
+    public UserDTO KiemTraDangNhap(string username, string password)
+    {
+        if(string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) return null;
+        return userDao.CheckLogin(username, password);
+    }
     
 }
