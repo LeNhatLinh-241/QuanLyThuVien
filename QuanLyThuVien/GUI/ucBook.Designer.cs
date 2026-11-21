@@ -13,6 +13,7 @@ namespace QuanLyThuVien.UI.UserControls
         private TextBox txtSoLuongNhap = null!;
         private ComboBox cboTheLoai = null!;
         private Button btnThemDauSach = null!;
+        private Button btnSuaDauSach = null!;
         private Label lblPhysicalCopiesHeader = null!;
         private Label lblPhysicalCopiesSummary = null!;
 
@@ -291,13 +292,14 @@ namespace QuanLyThuVien.UI.UserControls
             btnThemDauSach.Height = 50;
             btnThemDauSach.Click += AddBookTitleAndCopies;
             
-            var btnSua = CreateButton(
+            btnSuaDauSach = CreateButton(
                 "Sửa",
                 Color.White,
                 Color.FromArgb(30, 41, 59),
                 70
             );
-            btnSua.Height = 48;
+            btnSuaDauSach.Height = 48;
+            btnSuaDauSach.Click += UpdateSelectedBookTitle;
             
             var btnXoa = CreateButton(
                 "Xóa",
@@ -308,7 +310,7 @@ namespace QuanLyThuVien.UI.UserControls
             btnXoa.Height = 48;
             
             buttons.Controls.Add(btnThemDauSach);
-            buttons.Controls.Add(btnSua);
+            buttons.Controls.Add(btnSuaDauSach);
             buttons.Controls.Add(btnXoa);
             
             titleLayout.Controls.Add(buttons, 0, 2);

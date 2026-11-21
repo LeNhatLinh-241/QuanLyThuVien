@@ -10,75 +10,277 @@ namespace QuanLyThuVien.UI.UserControls
     public partial class ucBook : UserControl
     {
         private readonly BookTitleBLL _bookTitleBLL = new();
+        private readonly BookCopyBLL _bookCopyBLL = new();
         private readonly CategoryBLL _categoryBLL = new();
+        private bool _isLoadingBookTitles;
 
         public ucBook()
         {
             InitializeComponent();
-            LoadCategories();
-            LoadSampleData();
+            dgvDanhSachSach.SelectionChanged += DisplaySelectedCopies;
+
+            try
+            {
+                LoadCategories();
+                LoadBookTitles();
+            }
+            catch (SqliteException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Không thể tải dữ liệu sách từ cơ sở dữ liệu: {ex.Message}",
+                    "Lỗi cơ sở dữ liệu",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private void LoadCategories()
         {
             var categories = _categoryBLL.GetAll();
-            if (categories.Count == 0)
-            {
-                foreach (var categoryName in new[]
-                {
-                    "Công nghệ thông tin / Lập trình C#",
-                    "Kinh tế",
-                    "Ngoại ngữ"
-                })
-                {
-                    _categoryBLL.Add(new CategoryDTO { TenTheLoai = categoryName });
-                }
-
-                categories = _categoryBLL.GetAll();
-            }
-
             cboTheLoai.DisplayMember = nameof(CategoryDTO.TenTheLoai);
             cboTheLoai.ValueMember = nameof(CategoryDTO.CategoryID);
             cboTheLoai.DataSource = categories;
+            cboTheLoai.Enabled = categories.Count > 0;
         }
 
-        private void LoadSampleData()
+        private void LoadBookTitles(int? selectedTitleId = null)
         {
-            dgvDanhSachSach.Rows.Add(
-                "SACH01", "Lập trình C# căn bản", "Phạm Hữu Khang",
-                "Công nghệ", "120.000", "10"
-            );
-            dgvDanhSachSach.Rows.Add(
-                "SACH02", "Cơ sở dữ liệu", "Nguyễn Thị Ngọc Mai",
-                "Công nghệ", "110.000", "8"
-            );
-            dgvDanhSachSach.Rows.Add(
-                "SACH03", "Cấu trúc dữ liệu", "Đỗ Xuân Lôi",
-                "Công nghệ", "130.000", "12"
-            );
-            dgvDanhSachSach.Rows.Add(
-                "SACH04", "Kinh tế học vĩ mô", "Nguyễn Văn Dân",
-                "Kinh tế", "95.000", "15"
-            );
-            dgvDanhSachSach.Rows.Add(
-                "SACH05", "Dế Mèn phiêu lưu ký", "Tô Hoài",
-                "Văn học", "45.000", "20"
-            );
-
-            for (var copyNumber = 1; copyNumber <= 4; copyNumber++)
+            _isLoadingBookTitles = true;
+            try
             {
-                var rowIndex = dgvCuonSachVatLy.Rows.Add(
-                    $"SACH01_{copyNumber}",
-                    "SACH01",
-                    "Sẵn sàng trên kệ",
-                    "0",
-                    "Kệ A1-01"
-                );
-                dgvCuonSachVatLy.Rows[rowIndex].Cells[2].Style.ForeColor =
-                    Color.FromArgb(22, 163, 74);
+                var categories = _categoryBLL.GetAll()
+                    .ToDictionary(category => category.CategoryID, category => category.TenTheLoai);
+                var bookTitles = _bookTitleBLL.GetAll();
+
+                dgvDanhSachSach.Rows.Clear();
+                dgvCuonSachVatLy.Rows.Clear();
+
+                foreach (var bookTitle in bookTitles)
+                {
+                    var copies = _bookCopyBLL.GetByTitleId(bookTitle.TitleID);
+                    var bookCode = $"SACH{bookTitle.TitleID:D2}";
+                    var categoryName = categories.TryGetValue(bookTitle.CategoryID, out var name)
+                        ? name
+                        : "Không xác định";
+                    var rowIndex = dgvDanhSachSach.Rows.Add(
+                        bookCode,
+                        bookTitle.TenSach,
+                        bookTitle.TacGia,
+                        categoryName,
+                        bookTitle.GiaTien.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")),
+                        copies.Count.ToString(CultureInfo.CurrentCulture));
+                    dgvDanhSachSach.Rows[rowIndex].Tag = bookTitle.TitleID;
+                }
+
+                if (dgvDanhSachSach.Rows.Count == 0)
+                {
+                    lblPhysicalCopiesHeader.Text = "Chưa có đầu sách";
+                    lblPhysicalCopiesSummary.Text = "Không có cuốn sách vật lý";
+                    return;
+                }
+
+                var selectedRowIndex = 0;
+                if (selectedTitleId.HasValue)
+                {
+                    for (var index = 0; index < dgvDanhSachSach.Rows.Count; index++)
+                    {
+                        if (Equals(dgvDanhSachSach.Rows[index].Tag, selectedTitleId.Value))
+                        {
+                            selectedRowIndex = index;
+                            break;
+                        }
+                    }
+                }
+
+                dgvDanhSachSach.ClearSelection();
+                dgvDanhSachSach.Rows[selectedRowIndex].Selected = true;
+                if (dgvDanhSachSach.Rows[selectedRowIndex].Tag is int titleId)
+                {
+                    DisplaySelectedBook(titleId);
+                }
+            }
+            finally
+            {
+                _isLoadingBookTitles = false;
+            }
+        }
+
+        private void DisplaySelectedCopies(object? sender, EventArgs e)
+        {
+            if (_isLoadingBookTitles || dgvDanhSachSach.SelectedRows.Count == 0)
+            {
+                return;
             }
 
-            dgvDanhSachSach.Rows[0].Selected = true;
+            if (dgvDanhSachSach.SelectedRows[0].Tag is int titleId)
+            {
+                try
+                {
+                    DisplaySelectedBook(titleId);
+                }
+                catch (SqliteException ex)
+                {
+                    MessageBox.Show(
+                        this,
+                        $"Không thể tải thông tin sách: {ex.Message}",
+                        "Lỗi cơ sở dữ liệu",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void DisplaySelectedBook(int titleId)
+        {
+            var bookTitle = _bookTitleBLL.GetById(titleId);
+            if (bookTitle == null)
+            {
+                LoadBookTitles();
+                return;
+            }
+
+            txtTenDauSach.Text = bookTitle.TenSach;
+            txtTacGia.Text = bookTitle.TacGia;
+            txtGiaTien.Text = bookTitle.GiaTien.ToString(
+                "0.##",
+                CultureInfo.GetCultureInfo("vi-VN"));
+            cboTheLoai.SelectedValue = bookTitle.CategoryID;
+            DisplayCopies(titleId);
+        }
+
+        private void DisplayCopies(int titleId)
+        {
+            var bookCode = $"SACH{titleId:D2}";
+            var copies = _bookCopyBLL.GetByTitleId(titleId);
+
+            dgvCuonSachVatLy.Rows.Clear();
+            foreach (var copy in copies)
+            {
+                var rowIndex = dgvCuonSachVatLy.Rows.Add(
+                    copy.CopyID,
+                    bookCode,
+                    GetCopyStatusText(copy.TrangThai),
+                    copy.TrangThai,
+                    "-");
+                if (copy.TrangThai == 0)
+                {
+                    dgvCuonSachVatLy.Rows[rowIndex].Cells[2].Style.ForeColor =
+                        Color.FromArgb(22, 163, 74);
+                }
+            }
+
+            lblPhysicalCopiesHeader.Text = $"Mã vạch sinh tự động cho {bookCode}";
+            lblPhysicalCopiesSummary.Text = copies.Count == 0
+                ? "Không có cuốn sách vật lý"
+                : $"Hiển thị 1–{copies.Count} / {copies.Count} bản"
+                    + $" | {copies.Count(copy => copy.TrangThai == 1)} đang mượn"
+                    + $" | {copies.Count(copy => copy.TrangThai == 2)} mất/hỏng";
+        }
+
+        private static string GetCopyStatusText(int status)
+        {
+            return status switch
+            {
+                0 => "Sẵn sàng trên kệ",
+                1 => "Đang mượn",
+                2 => "Mất/hỏng",
+                _ => $"Không xác định ({status})"
+            };
+        }
+
+        private void UpdateSelectedBookTitle(object? sender, EventArgs e)
+        {
+            if (dgvDanhSachSach.SelectedRows.Count == 0 ||
+                dgvDanhSachSach.SelectedRows[0].Tag is not int titleId)
+            {
+                MessageBox.Show(
+                    this,
+                    "Hãy chọn đầu sách cần sửa.",
+                    "Chưa chọn đầu sách",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!double.TryParse(
+                    txtGiaTien.Text,
+                    NumberStyles.Number,
+                    CultureInfo.GetCultureInfo("vi-VN"),
+                    out var price))
+            {
+                MessageBox.Show(
+                    this,
+                    "Giá tiền không hợp lệ.",
+                    "Dữ liệu không hợp lệ",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtGiaTien.Focus();
+                return;
+            }
+
+            if (cboTheLoai.SelectedValue is not int categoryId ||
+                cboTheLoai.SelectedItem is not CategoryDTO)
+            {
+                MessageBox.Show(
+                    this,
+                    "Hãy chọn thể loại hợp lệ trước khi lưu.",
+                    "Thiếu thể loại",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                cboTheLoai.Focus();
+                return;
+            }
+
+            var bookTitle = new BookTitleDTO
+            {
+                TitleID = titleId,
+                TenSach = txtTenDauSach.Text,
+                TacGia = txtTacGia.Text,
+                GiaTien = price,
+                CategoryID = categoryId
+            };
+
+            try
+            {
+                if (!_bookTitleBLL.Update(bookTitle))
+                {
+                    MessageBox.Show(
+                        this,
+                        "Đầu sách không còn tồn tại hoặc đã bị xóa.",
+                        "Không thể cập nhật",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    LoadBookTitles();
+                    return;
+                }
+
+                LoadBookTitles(titleId);
+                MessageBox.Show(
+                    this,
+                    "Đã cập nhật thông tin đầu sách.",
+                    "Thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    ex.Message,
+                    "Không thể cập nhật đầu sách",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (SqliteException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Không thể cập nhật đầu sách: {ex.Message}",
+                    "Lỗi cơ sở dữ liệu",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private void AddBookTitleAndCopies(object? sender, EventArgs e)
@@ -139,55 +341,7 @@ namespace QuanLyThuVien.UI.UserControls
             try
             {
                 var result = _bookTitleBLL.AddWithCopies(bookTitle, quantity);
-                var bookCode = $"SACH{result.TitleId:D2}";
-                var titleValues = new object[]
-                {
-                    bookCode,
-                    bookTitle.TenSach,
-                    bookTitle.TacGia,
-                    category.TenTheLoai,
-                    price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")),
-                    quantity.ToString(CultureInfo.CurrentCulture)
-                };
-
-                var titleRow = -1;
-                for (var index = 0; index < dgvDanhSachSach.Rows.Count; index++)
-                {
-                    if (Equals(dgvDanhSachSach.Rows[index].Cells[0].Value, bookCode))
-                    {
-                        titleRow = index;
-                        break;
-                    }
-                }
-
-                if (titleRow < 0)
-                {
-                    titleRow = dgvDanhSachSach.Rows.Add(titleValues);
-                }
-                else
-                {
-                    dgvDanhSachSach.Rows[titleRow].SetValues(titleValues);
-                }
-
-                dgvDanhSachSach.ClearSelection();
-                dgvDanhSachSach.Rows[titleRow].Selected = true;
-                dgvCuonSachVatLy.Rows.Clear();
-                foreach (var copy in result.Copies)
-                {
-                    var copyRow = dgvCuonSachVatLy.Rows.Add(
-                        copy.CopyID,
-                        bookCode,
-                        "Sẵn sàng trên kệ",
-                        copy.TrangThai,
-                        "-"
-                    );
-                    dgvCuonSachVatLy.Rows[copyRow].Cells[2].Style.ForeColor =
-                        Color.FromArgb(22, 163, 74);
-                }
-
-                lblPhysicalCopiesHeader.Text = $"Mã vạch sinh tự động cho {bookCode}";
-                lblPhysicalCopiesSummary.Text =
-                    $"Hiển thị 1–{result.Copies.Count} / {result.Copies.Count} bản";
+                LoadBookTitles(result.TitleId);
             }
             catch (ArgumentException ex)
             {
