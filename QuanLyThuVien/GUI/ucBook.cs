@@ -75,6 +75,10 @@ namespace QuanLyThuVien.UI.UserControls
 
                 if (dgvDanhSachSach.Rows.Count == 0)
                 {
+                    txtTenDauSach.Clear();
+                    txtTacGia.Clear();
+                    txtGiaTien.Clear();
+                    cboTheLoai.SelectedIndex = -1;
                     lblPhysicalCopiesHeader.Text = "Chưa có đầu sách";
                     lblPhysicalCopiesSummary.Text = "Không có cuốn sách vật lý";
                     return;
@@ -277,6 +281,76 @@ namespace QuanLyThuVien.UI.UserControls
                 MessageBox.Show(
                     this,
                     $"Không thể cập nhật đầu sách: {ex.Message}",
+                    "Lỗi cơ sở dữ liệu",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void DeleteSelectedBookTitle(object? sender, EventArgs e)
+        {
+            if (dgvDanhSachSach.SelectedRows.Count == 0 ||
+                dgvDanhSachSach.SelectedRows[0].Tag is not int titleId)
+            {
+                MessageBox.Show(
+                    this,
+                    "Hãy chọn đầu sách cần xóa.",
+                    "Chưa chọn đầu sách",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var selectedRow = dgvDanhSachSach.SelectedRows[0];
+            var titleName = Convert.ToString(selectedRow.Cells[1].Value) ?? "đầu sách đã chọn";
+            var confirmation = MessageBox.Show(
+                this,
+                $"Bạn có chắc muốn xóa đầu sách \"{titleName}\"? Đầu sách sẽ được ẩn khỏi danh sách. "
+                    + "Không thể xóa nếu còn cuốn đang được mượn.",
+                "Xác nhận xóa đầu sách",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (confirmation != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!_bookTitleBLL.Delete(titleId))
+                {
+                    LoadBookTitles(titleId);
+                    MessageBox.Show(
+                        this,
+                        "Không thể xóa đầu sách. Có thể sách đang được mượn hoặc đầu sách đã bị xóa.",
+                        "Không thể xóa",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                LoadBookTitles();
+                MessageBox.Show(
+                    this,
+                    "Đã xóa đầu sách khỏi danh sách.",
+                    "Thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    ex.Message,
+                    "Không thể xóa đầu sách",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (SqliteException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Không thể xóa đầu sách: {ex.Message}",
                     "Lỗi cơ sở dữ liệu",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

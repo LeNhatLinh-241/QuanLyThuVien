@@ -14,6 +14,7 @@ namespace QuanLyThuVien.UI.UserControls
         private ComboBox cboTheLoai = null!;
         private Button btnThemDauSach = null!;
         private Button btnSuaDauSach = null!;
+        private Button btnXoaDauSach = null!;
         private Label lblPhysicalCopiesHeader = null!;
         private Label lblPhysicalCopiesSummary = null!;
 
@@ -301,17 +302,18 @@ namespace QuanLyThuVien.UI.UserControls
             btnSuaDauSach.Height = 48;
             btnSuaDauSach.Click += UpdateSelectedBookTitle;
             
-            var btnXoa = CreateButton(
+            btnXoaDauSach = CreateButton(
                 "Xóa",
                 Color.White,
                 Color.FromArgb(220, 38, 38),
                 66
             );
-            btnXoa.Height = 48;
+            btnXoaDauSach.Height = 48;
+            btnXoaDauSach.Click += DeleteSelectedBookTitle;
             
             buttons.Controls.Add(btnThemDauSach);
             buttons.Controls.Add(btnSuaDauSach);
-            buttons.Controls.Add(btnXoa);
+            buttons.Controls.Add(btnXoaDauSach);
             
             titleLayout.Controls.Add(buttons, 0, 2);
             
