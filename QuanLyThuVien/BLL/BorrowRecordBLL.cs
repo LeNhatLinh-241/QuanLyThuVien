@@ -141,7 +141,7 @@ public class BorrowRecordBLL
     }
     
     //Lấy danh sách độc giả đang hoạt động
-    public List<UserDTO> GetUsers()
+    public List<UserDTO> LayDanhSachDocGia()
     {
         return BorrowDao.LayDanhSachDocGiaHoatDong();
     }
