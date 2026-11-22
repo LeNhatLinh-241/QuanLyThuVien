@@ -5,10 +5,23 @@ namespace QuanLyThuVien.GUI.UserControls;
 public partial class ucBorrow : UserControl
 {
     private BorrowRecordBLL borrowBll = new BorrowRecordBLL();
+    private Dictionary<int, string> mapTenDocGia = new Dictionary<int, string>();
+    private Dictionary<string, string> mapTenSach = new  Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    
     private string ngayHanTraTam = "";
+    private string ngayMuonTam = "";
+    private int trangThaiPhieuDangChon = -1;
+    private bool daTaiLanDau = false;
     public ucBorrow()
     {
         InitializeComponent();
+        
+        //Tự tải lại dữ liệu mỗi khi chuyển tab quay lại màn hình này
+        this.VisibleChanged += ucBorrow_VisibleChanged;
+        
+        //Hỗ trợ bấm Enter ở ô quét mã vạch và ô tìm kiếm
+        txtMaVach.KeyDown += txtMaVach_KeyDown;
+        txtTimKiem.KeyDown += txtTimKiem_KeyDown;
     }
 
     private void ucBorrow_Load(object sender, EventArgs e)
@@ -17,16 +30,16 @@ public partial class ucBorrow : UserControl
         dtpNgayHanTra.Value = DateTime.Now.AddDays(7);
         dtpNgayTra.Value = DateTime.Now;
 
-        //tạo dữ liệu giả cho combobox để test UI
-        List<UserDTO> listDocGiaTam = new List<UserDTO>();
-        listDocGiaTam.Add(new UserDTO {ID = 1, HoTen = "DG001 Nguyễn Minh Anh"});
+      //  //tạo dữ liệu giả cho combobox để test UI
+      //  List<UserDTO> listDocGiaTam = new List<UserDTO>();
+      //  listDocGiaTam.Add(new UserDTO {ID = 1, HoTen = "DG001 Nguyễn Minh Anh"});
 
-    listDocGiaTam.Add(new UserDTO{ID = 2, HoTen = "DG002 Trần Quốc Bảo"});
-        listDocGiaTam.Add(new UserDTO{ID = 1, HoTen = "DG003 Lê Thu Hà"});
+       // listDocGiaTam.Add(new UserDTO{ID = 2, HoTen = "DG002 Trần Quốc Bảo"});
+       // listDocGiaTam.Add(new UserDTO{ID = 1, HoTen = "DG003 Lê Thu Hà"});
 
-        cboDocGia.DataSource = listDocGiaTam;
-        cboDocGia.DisplayMember = "HoTen";
-        cboDocGia.ValueMember = "ID";
+       // cboDocGia.DataSource = listDocGiaTam;
+       // cboDocGia.DisplayMember = "HoTen";
+       // cboDocGia.ValueMember = "ID";
 
         cboTinhTrangSach.Items.Clear();
         cboTinhTrangSach.Items.Add("Trả sách");
@@ -41,24 +54,164 @@ public partial class ucBorrow : UserControl
         cboLocTrangThai.SelectedIndex = 0;
 
         dgvDanhSach.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-
-        LoadDanhSachPhieuMuon();
         
+        cboDocGia.DropDownStyle = ComboBoxStyle.DropDown;
+        cboDocGia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+        cboDocGia.AutoCompleteSource = AutoCompleteSource.ListItems;
+        //bật gợi ý mã vạch tự động
+        txtMaVach.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+        txtMaVach.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        
+        //LoadDanhSachPhieuMuon();
+        ReloadData();
+        daTaiLanDau = true;
+    }
+
+    private void ucBorrow_VisibleChanged(object sender, EventArgs e)
+    {
+        if (daTaiLanDau && this.Visible && !this.DesignMode)
+        {
+            ReloadData();
+        }
     }
     
+    //Gom các hàm nạp dữ liệu để dùng chung lúc mở form và lúc chuyển tab
+    public void ReloadData()
+    {
+        LoadMapTraCuu();
+        LoadDanhSachDocGia();
+        LoadGoiYMaVach();
+        LoadDanhSachPhieuMuon();
+    }
+    
+    //Nạp sẵn tên độc giả và tên sách vào Dictionary để hiện thị và tìm kiếm
+    private void LoadMapTraCuu()
+    {
+        try
+        {
+            mapTenDocGia = borrowBll.LayMapTenDocGia();
+            mapTenSach = borrowBll.LayMapTenSachTheoMaVach();
+        }
+        catch
+        {
+            //Bỏ qua nếu chưa tải được map
+        }
+    }
+    
+    //Nạp danh sách độc giả thật từ SQLite vào combobox
+    private void LoadDanhSachDocGia()
+    {
+        try
+        {
+            object dangChon = cboDocGia.SelectedValue;
+            List<UserDTO> dsDocGia = borrowBll.LayDanhSachDocGia();
+            cboDocGia.DataSource = null;
+            cboDocGia.DisplayMember = "HoTen";
+            cboDocGia.ValueMember = "ID";
+            cboDocGia.DataSource = dsDocGia;
+            if (dangChon is int id && dsDocGia.Exists(u => u.ID == id))
+            {
+                cboDocGia.SelectedValue = id;
+            }
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show("Không tải được danh sách độc giả: " + e.Message, "Thông báo", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+    
+    //Nạp các mã vạch đang rảnh vào gợi ý AutoComplete
+    private void LoadGoiYMaVach()
+    {
+        try
+        {
+            List<string> dsMaVach = borrowBll.LayDanhSachMaVachSanSang();
+            AutoCompleteStringCollection nguonGoiY = new AutoCompleteStringCollection();
+            nguonGoiY.AddRange(dsMaVach.ToArray());
+            txtMaVach.AutoCompleteCustomSource = nguonGoiY;
+        }
+        catch
+        {
+            //Bỏ qua nếu kho chưa có sách
+        }
+    }
+
+    private void ResetKhungTraSach()
+    {
+        txtMaPhieu.Clear();
+        txtMaVachTra.Clear();
+        ngayMuonTam = "";
+        ngayHanTraTam = "";
+        trangThaiPhieuDangChon = -1;
+        cboTinhTrangSach.SelectedIndex = 0;
+        dtpNgayTra.Value = DateTime.Now;
+        lblTongTienPhat.Text = "Tiền phạt: 0 đ";
+        btnNhanTraSach.Enabled = true;
+        btnNhanTraSach.BackColor = Color.FromArgb(22, 163, 74);
+    }
+    private void txtMaVach_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            btnChoMuon_Click(sender, e);
+        }
+    }
+    private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            btnTimKiem_Click(sender, e);
+        }
+    }
+
     //Đổi tên cột snag tiếng việt cho dễ nhìn
     private void DinhDangCotBang()
     {
         if (dgvDanhSach.Columns.Count > 0)
         {
-            if (dgvDanhSach.Columns["RecordID"] != null) dgvDanhSach.Columns["RecordID"].HeaderText = "Mã Phiếu";
-            if (dgvDanhSach.Columns["UserID"] != null) dgvDanhSach.Columns["UserID"].HeaderText = "Độc Giả";
-            if (dgvDanhSach.Columns["CopyID"] != null) dgvDanhSach.Columns["CopyID"].HeaderText = "Sách Mượn";
-            if (dgvDanhSach.Columns["NgayMuon"] != null) dgvDanhSach.Columns["NgayMuon"].HeaderText = "Ngày Mượn";
-            if (dgvDanhSach.Columns["NgayHanTra"] != null) dgvDanhSach.Columns["NgayHanTra"].HeaderText = "Hạn Trả";
-            if (dgvDanhSach.Columns["NgayTraThucTe"] != null) dgvDanhSach.Columns["NgayTraThucTe"].HeaderText = "Ngày Trả";
-            if (dgvDanhSach.Columns["TrangThai"] != null) dgvDanhSach.Columns["TrangThai"].HeaderText = "Trạng Thái";
-            if (dgvDanhSach.Columns["TienPhat"] != null) dgvDanhSach.Columns["TienPhat"].HeaderText = "Tiền Phạt";
+            if (dgvDanhSach.Columns["RecordID"] != null)
+            {
+                dgvDanhSach.Columns["RecordID"].HeaderText = "Mã Phiếu";
+                dgvDanhSach.Columns["RecordID"].FillWeight = 75;
+            }
+            if (dgvDanhSach.Columns["UserID"] != null)
+            {
+                dgvDanhSach.Columns["UserID"].HeaderText = "Độc Giả";
+                dgvDanhSach.Columns["UserID"].FillWeight = 115;
+            }
+            if (dgvDanhSach.Columns["CopyID"] != null)
+            {
+                dgvDanhSach.Columns["CopyID"].HeaderText = "Sách Mượn";
+                dgvDanhSach.Columns["CopyID"].FillWeight = 145;
+            }
+            if (dgvDanhSach.Columns["NgayMuon"] != null)
+            {
+                dgvDanhSach.Columns["NgayMuon"].HeaderText = "Ngày Mượn";
+                dgvDanhSach.Columns["NgayMuon"].FillWeight = 90;
+            }
+            if (dgvDanhSach.Columns["NgayHanTra"] != null)
+            {
+                dgvDanhSach.Columns["NgayHanTra"].HeaderText = "Hạn Trả";
+                dgvDanhSach.Columns["NgayHanTra"].FillWeight = 85;
+            }
+            if (dgvDanhSach.Columns["NgayTraThucTe"] != null)
+            {
+                dgvDanhSach.Columns["NgayTraThucTe"].HeaderText = "Ngày Trả";
+                dgvDanhSach.Columns["NgayTraThucTe"].FillWeight = 85;
+            }
+            if (dgvDanhSach.Columns["TrangThai"] != null)
+            {
+                dgvDanhSach.Columns["TrangThai"].HeaderText = "Trạng Thái";
+                dgvDanhSach.Columns["TrangThai"].FillWeight = 100;
+            }
+            if (dgvDanhSach.Columns["TienPhat"] != null)
+            {
+                dgvDanhSach.Columns["TienPhat"].HeaderText = "Tiền Phạt";
+                dgvDanhSach.Columns["TienPhat"].FillWeight = 85;
+            }
             if (dgvDanhSach.Columns["TrangThaiThuTien"] != null) dgvDanhSach.Columns["TrangThaiThuTien"].Visible = false;
         }
     }
@@ -100,9 +253,9 @@ public partial class ucBorrow : UserControl
                 }
             }
 
-            lblThongKeNho.Text = dangMuon + " phiếu đang mượn " + quaHan + "quá hạn";
+            lblThongKeNho.Text = dangMuon + " phiếu đang mượn " + quaHan + " quá hạn";
             lblChanTrang.Text = "Hiển thị " + list.Count + "phiếu | đã chọn: " +
-                                (string.IsNullOrEmpty(txtMaPhieu.Text) ? "Chưa chọn " : txtMaPhieu.Text);
+                                (string.IsNullOrEmpty(txtMaPhieu.Text) ? "Chưa chọn " : "PM" + txtMaPhieu.Text.PadLeft(3, '0'));
         }
         catch (Exception ex)
         {
@@ -143,7 +296,7 @@ public partial class ucBorrow : UserControl
         }
 
         lblTrangThaiMuon.Text = "Đang Mượn: " + soSachDangMuon + "/3 cuốn | Nợ Phạt: " + noPhat.ToString(
-            "0" + "đ | Thẻ: Hợp lệ");
+            "N0") + "đ | Thẻ: Hợp lệ";
     }
     
     //Xử lý mượn sách
@@ -155,16 +308,33 @@ public partial class ucBorrow : UserControl
             return;
         }
 
+        if (dtpNgayHanTra.Value.Date < dtpNgayMuon.Value.Date)
+        {
+            MessageBox.Show("Ngày hạn trả không được nhỏ hơn ngày mượn ", "Thông báo", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return;
+        }
+
         int userId = Convert.ToInt32(cboDocGia.SelectedValue);
         string copyId = txtMaVach.Text.Trim();
-        
+
+        if (string.IsNullOrEmpty(copyId))
+        {
+            MessageBox.Show("Vui lòng nhập hoặc quét mã vạch sách", "THÔNG BÁO", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            txtMaVach.Focus();
+            return;
+        }
+
         string thongBao = borrowBll.MuonSach(userId, copyId, dtpNgayMuon.Value, dtpNgayHanTra.Value);
 
-        if (thongBao.Contains("Thành công"))
+        if (thongBao.Contains("Thành công", StringComparison.OrdinalIgnoreCase))
         {
             MessageBox.Show(thongBao, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtMaVach.Clear();
             LoadDanhSachPhieuMuon();
+            LoadMapTraCuu();
+            LoadGoiYMaVach();
             cboDocGia_SelectedIndexChanged(null, null);
         }
         else
@@ -185,7 +355,13 @@ public partial class ucBorrow : UserControl
         txtMaPhieu.Text = row.Cells["RecordID"].Value?.ToString() ?? "";
         txtMaVachTra.Text = row.Cells["CopyID"].Value?.ToString() ?? "";
         ngayHanTraTam = row.Cells["NgayHanTra"].Value?.ToString() ?? "";
-
+        ngayMuonTam = row.Cells["NgayMuon"].Value?.ToString() ?? "";
+        trangThaiPhieuDangChon = Convert.ToInt32(row.Cells["TrangThai"].Value ?? -1);
+        
+        //Khoá nút nếu phiếu đã trả hoặc báo mất
+        bool dangMuon = (trangThaiPhieuDangChon == 0);
+        btnNhanTraSach.Enabled = dangMuon;
+        btnNhanTraSach.BackColor = dangMuon ? Color.FromArgb(22, 163, 74) : Color.FromArgb(148, 163, 184);
         lblChanTrang.Text = "Hiển thị " + dgvDanhSach.Rows.Count + " phiếu | Đã chọn: #" + txtMaPhieu.Text;
         CapNhatTienPhat(null, null);
     }
@@ -198,31 +374,50 @@ public partial class ucBorrow : UserControl
             return;
         }
 
+        if (trangThaiPhieuDangChon != 0)
+        {
+            lblTongTienPhat.Text = "Phiếu này đã xử lý xong";
+            return;
+        }
         int trangThaiTra = (cboTinhTrangSach.SelectedIndex == 0) ? 1 : 2;
         double tienPhat = borrowBll.TinhTienPhat(ngayHanTraTam, dtpNgayTra.Value, trangThaiTra, txtMaVachTra.Text);
-        lblTongTienPhat.Text = "Tiền phạt: " + tienPhat.ToString("NO") + " đ";
+        lblTongTienPhat.Text = "Tiền phạt: " + tienPhat.ToString("N0") + " đ";
     }
      
     //bấm nút nhận trả sách
     private void btnNhanTraSach_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(txtMaPhieu.Text))
+        if (!int.TryParse(txtMaPhieu.Text.Trim(), out int recordId))
         {
             MessageBox.Show("Chọn một phiếu mượn bên bảng trước khi trả!", "Thông báo", MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
             return;
         }
 
-        int recordId = Convert.ToInt32(txtMaPhieu.Text);
+        if (trangThaiPhieuDangChon != 0)
+        {
+            MessageBox.Show("Phiếu này ã được trả hoặc báo amats rồi", "Thông báo", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (DateTime.TryParse(ngayMuonTam, out DateTime ngayMuon) && dtpNgayTra.Value < ngayMuon.Date)
+        {
+            MessageBox.Show("Ngày trả không được nhỏ hơn ngày mượn", "Thông báo", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return;
+        }
         string copyId = txtMaVachTra.Text;
         int trangThaiTra = (cboTinhTrangSach.SelectedIndex == 0) ? 1 : 2;
         
         //mặc định khi nhận trả sách có thu tiền phạt tại quầy: daDongPhat = true
         string thongBao =
             borrowBll.TraSachHoacBaoMat(recordId, copyId, ngayHanTraTam, dtpNgayTra.Value, trangThaiTra, true);
-        if (thongBao.Contains("Thành công"))
+        if (thongBao.Contains("Thành công", StringComparison.OrdinalIgnoreCase))
         {
             MessageBox.Show(thongBao, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ResetKhungTraSach();
+            LoadGoiYMaVach();
             LoadDanhSachPhieuMuon();
             cboDocGia_SelectedIndexChanged(null, null);
         }
@@ -250,6 +445,29 @@ public partial class ucBorrow : UserControl
             }
 
             e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
+        }
+        if (colName == "UserID" && e.Value != null)
+        {
+            if (int.TryParse(e.Value.ToString(), out int userId) && mapTenDocGia.TryGetValue(userId, out string tenDocGia))
+            {
+                e.Value = tenDocGia;
+                e.FormattingApplied = true;
+            }
+        }
+        if (colName == "CopyID" && e.Value != null)
+        {
+            string copyId = e.Value.ToString() ?? "";
+            string tenSach = mapTenSach.TryGetValue(copyId, out string ten) ? ten : "(Sách đã xóa)";
+            e.Value = copyId + " · " + tenSach;
+            e.FormattingApplied = true;
+        }
+        if (colName == "TienPhat" && e.Value != null)
+        {
+            if (double.TryParse(e.Value.ToString(), out double tien))
+            {
+                e.Value = tien.ToString("N0") + " đ";
+                e.FormattingApplied = true;
+            }
         }
 
         if (colName == "NgayTraThucTe" && (e.Value == null || string.IsNullOrEmpty(e.Value.ToString())))
@@ -305,12 +523,20 @@ public partial class ucBorrow : UserControl
         List<BorrowRecordDTO> dsLoc = new List<BorrowRecordDTO>();
 
         foreach (BorrowRecordDTO item in dsGoc)
-        {
+        {   
+            string maPhieuDayDu = "pm" + item.RecordID.ToString("D3");
+            string tenDocGia = mapTenDocGia.TryGetValue(item.UserID, out string dg) ? dg.ToLower() : "";
+            string tenSach = (item.CopyID != null && mapTenSach.TryGetValue(item.CopyID, out string ts)) ? ts.ToLower() : "";
+            
+            //trùng từ khóa
             bool trungTuKhoa = string.IsNullOrEmpty(tuKhoa) || item.RecordID.ToString().Contains(tuKhoa) ||
+                               item.UserID.ToString().Contains(tuKhoa) || maPhieuDayDu.Contains(tuKhoa) ||
                                item.UserID.ToString().Contains(tuKhoa) ||
+                               tenDocGia.Contains(tuKhoa) ||
+                               tenSach.Contains(tuKhoa) ||
                                (item.CopyID != null && item.CopyID.ToLower().Contains(tuKhoa));
         
-
+            //trùng trạng thái
             bool trungTrangThai = (trangThaiLoc == -1) || (item.TrangThai == trangThaiLoc);
 
             if (trungTuKhoa && trungTrangThai)
