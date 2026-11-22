@@ -139,4 +139,25 @@ public class BorrowRecordBLL
     {
         return BorrowDao.UpdateTrangThaiThuTien(recordId);
     }
+    
+    //Lấy danh sách độc giả đang hoạt động
+    public List<UserDTO> GetUsers()
+    {
+        return BorrowDao.LayDanhSachDocGiaHoatDong();
+    }
+    //Lấy danh sách mã vạch sẵn s để gợi ý nhập liệu
+    public List<string> LayDanhSachMaVachSanSang()
+    {
+        return BorrowDao.LayDanhSachMaVachSanSang();
+    }
+    //Lấy map tra cứu ID, Tên độc giả
+    public Dictionary<int, string> LayMapTenDocGia()
+    {
+        return BorrowDao.LayMapTenDocGia();
+    }
+    //Lấy map tra cứu copyid tên sách
+    public Dictionary<string, string> LayMapTenSachTheoMaVach()
+    {
+        return BorrowDao.LayMapTenSachTheoMaVach();
+    }
 }
