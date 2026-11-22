@@ -1,10 +1,12 @@
+using Dapper;
+using Microsoft.VisualBasic.ApplicationServices;
 using QuanLyThuVien.DTO;
 namespace QuanLyThuVien.DAO;
 
 public class BorrowRecordDAO
 {
     private DatabaseConnect db = new DatabaseConnect();
-    
+
     //Lấy toàn b danh sách phiếu mượn trả theo đúng 9 cột của Bảng BorrowRecords
     public List<BorrowRecordDTO> GetAll()
     {
@@ -41,7 +43,7 @@ public class BorrowRecordDAO
 
         return list;
     }
-    
+
     //Điều kiện 1: kiểm tra bảng Users (ID tồn tại và IsActive = 1)
     public bool KiemTraDocGiaHoatDong(int userId)
     {
@@ -62,7 +64,7 @@ public class BorrowRecordDAO
             }
         }
     }
-    
+
     // Điều kiện 2: kiểm tra bảng BorrowRecords (Có nợ TienPhat > 0 mà TrangThaiThuTien = 0 không)
     public double TinhTongNoPhat(int userId)
     {
@@ -86,7 +88,7 @@ public class BorrowRecordDAO
             }
         }
     }
-    
+
     //Điều kiện 3: đếm số sách đang muonjwt trong BorrowRecords
     public int DemSoSachDangMuon(int userId)
     {
@@ -104,6 +106,7 @@ public class BorrowRecordDAO
             }
         }
     }
+
     //Kiểm tra mã vạch CopyID trong BookCopies (kết hợp kiểm tra IsDeleted = 0 ở BookTitles và Categories)
     //Trả về: -1 (không tồn tại hoặc đầu sách / thể loại đã xóa),0 (Rảnh), 1(Đang mượn), 2(Mất/Hỏng)
     public int LayTrangThaiCuonSach(string copyId)
@@ -130,6 +133,7 @@ public class BorrowRecordDAO
             }
         }
     }
+
     //Lấy cột GiaTien từ bảng BookTitles thông qua mã vạch CopyID ( dùng khi làm mất sách)
     public double LayGiaTienSach(string copyId)
     {
@@ -154,7 +158,7 @@ public class BorrowRecordDAO
             }
         }
     }
-    
+
     //Mượn sách: Thêm vào BorrowRecords và đổi BookCopies.TrangThai = 1(Đang bị mượn)
     public bool InsertBorrowRecord(BorrowRecordDTO phieu)
     {
@@ -190,13 +194,14 @@ public class BorrowRecordDAO
                 }
                 catch
                 {
-                    transaction.Rollback(); //nếu có lỗi xảy ra, rollback transaction để đảm bảo dữ liệu không bị thay đổi
+                    transaction
+                        .Rollback(); //nếu có lỗi xảy ra, rollback transaction để đảm bảo dữ liệu không bị thay đổi
                     return false; // trả về false nếu có lỗi xảy ra
                 }
             }
         }
     }
-    
+
     //Tra sách / báo mất: cập nhật BorrowRecords và đổi BookCopies.TrangThai(0 = rảnh, 2 = mất/hỏng)
     public bool UpdateBorrowRecord(int recordId, string copyId, string ngayTraThucTe, int trangThaiPhieu,
         double tienPhat, int trangThaiThuTien)
@@ -247,7 +252,7 @@ public class BorrowRecordDAO
             }
         }
     }
-    
+
     //cập nhật TrangThaiThuTien = 1 khi độc giả đóng phạt
     public bool UpdateTrangThaiThuTien(int recordId)
     {
@@ -261,5 +266,91 @@ public class BorrowRecordDAO
                 return command.ExecuteNonQuery() > 0; // trả về true nếu có ít nhất 1 hàng bị ảnh hưởng
             }
         }
+    }
+
+    //Lấy danh sách đc giả hoạt động để đổ vào combobox
+    public List<UserDTO> LayDanhSachDocGiaHoatDong()
+    {
+        using (var conn = db.GetConnection())
+        {
+            string sql = "SELECT ID, HoTen FROM Users WHERE Role = 0 AND IsActive = 1 ORDER BY ID";
+            return conn.Query<UserDTO>(sql).ToList();
+        }
+    }
+
+    //lấy mã vạch đang sẵn sàng để làm gợi ý
+    public List<string> LayDanhSachMaVachSanSang()
+    {
+        List<string> list = new List<string>();
+        using (var conn = db.GetConnection())
+        {
+            conn.Open();
+            using (var command = conn.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT bc.CopyID
+                    FROM BookCopies bc
+                    JOIN BookTitles bt ON bc.TitleID = bt.TitleID
+                    LEFT JOIN Categories c ON bt.CategoryID = c.CategoryID
+                    WHERE bc.TrangThai = 0 AND bt.IsDeleted = 0 AND IFNULL(c.IsDeleted, 0) = 0
+                    ORDER BY bc.CopyID";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetString(0));
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+
+    //Tạo map tra cứu ID, họ tên độc giả
+    public Dictionary<int, string> LayMapTenDocGia()
+    {
+        var map = new Dictionary<int, string>();
+        using (var conn = db.GetConnection())
+        {
+            var list = conn.Query<UserDTO>("SELECT ID, HoTen FROM Users");
+            foreach (var u in list)
+            {
+                map[u.ID] = u.HoTen ?? "Không rõ";
+            }
+        }
+
+        return map;
+    }
+
+    //Tạo map ta cứu copyID , tên sách dùng left join để không lỗi nếu sách bị xóa
+    public Dictionary<string, string> LayMapTenSachTheoMaVach()
+    {
+        var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        using (var conn = db.GetConnection())
+        {
+            conn.Open();
+            using (var command = conn.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT bc.CopyID, IFNULL(bt.TenSach, '(Sách đã xóa)') AS TenSach
+                    FROM BookCopies bc
+                    LEFT JOIN BookTitles bt ON bc.TitleID = bt.TitleID";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string copyId = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                        string tenSach = reader.IsDBNull(1) ? "(Sách đã xóa)" : reader.GetString(1);
+                        if (!string.IsNullOrEmpty(copyId))
+                        {
+                            map[copyId] = tenSach;
+                        }
+                    }
+                }
+            }
+        }
+
+        return map;
     }
 }
