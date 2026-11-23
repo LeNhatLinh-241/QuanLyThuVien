@@ -12,6 +12,9 @@ namespace QuanLyThuVien.UI.UserControls
         private TextBox txtGiaTien = null!;
         private TextBox txtSoLuongNhap = null!;
         private ComboBox cboTheLoai = null!;
+        private TreeView tvTheLoai = null!;
+        private Label lblCategoryCount = null!;
+        private Button btnThemTheLoai = null!;
         private Button btnThemDauSach = null!;
         private Button btnSuaDauSach = null!;
         private Button btnXoaDauSach = null!;
@@ -113,7 +116,7 @@ namespace QuanLyThuVien.UI.UserControls
             ResumeLayout(false);
         }
 
-        private static Control CreateCategoriesPanel()
+        private Control CreateCategoriesPanel()
         {
             var panel = new Panel
             {
@@ -135,15 +138,16 @@ namespace QuanLyThuVien.UI.UserControls
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
             layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH (CÂY PHÂN CẤP)"), 0, 0);
-            layout.Controls.Add(new Label
+            lblCategoryCount = new Label
             {
-                Text = "4 nhóm",
+                Text = "0 nhóm",
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleLeft,
                 ForeColor = Color.FromArgb(100, 116, 139)
-            }, 0, 1);
+            };
+            layout.Controls.Add(lblCategoryCount, 0, 1);
 
-            var tree = new TreeView
+            tvTheLoai = new TreeView
             {
                 Name = "tvTheLoai",
                 Dock = DockStyle.Fill,
@@ -159,15 +163,7 @@ namespace QuanLyThuVien.UI.UserControls
                 ItemHeight = 40,
                 Indent = 18
             };
-            var technology = tree.Nodes.Add("Công nghệ thông tin");
-            technology.Nodes.Add("Lập trình C#");
-            technology.Nodes.Add("Cơ sở dữ liệu");
-            tree.Nodes.Add("Kinh tế");
-            tree.Nodes.Add("Ngoại ngữ");
-            
-            technology.Expand();
-            tree.SelectedNode = technology;
-            layout.Controls.Add(tree, 0, 2);
+            layout.Controls.Add(tvTheLoai, 0, 2);
             
             var buttons = new FlowLayoutPanel
             {
@@ -179,13 +175,15 @@ namespace QuanLyThuVien.UI.UserControls
                 Margin = Padding.Empty
             };
             
-            var btnThem = CreateButton(
+            btnThemTheLoai = CreateButton(
                 "Thêm",
                 Color.FromArgb(37, 99, 235),
                 Color.White,
                 120
             );
-            btnThem.Height = 48;
+            btnThemTheLoai.Name = "btnThemTheLoai";
+            btnThemTheLoai.Height = 48;
+            btnThemTheLoai.Click += AddBookCategory;
 
             var btnSua = CreateButton(
                 "Sửa",
@@ -202,14 +200,14 @@ namespace QuanLyThuVien.UI.UserControls
                 200
             );
             
-            foreach (Button btn in new[] { btnThem, btnSua, btnXoa })
+            foreach (Button btn in new[] { btnThemTheLoai, btnSua, btnXoa })
             {
                 btn.Height = 48;
                 btn.Margin = new Padding(2);
                 btn.Padding = new Padding(0);
             }
             
-            buttons.Controls.Add(btnThem);
+            buttons.Controls.Add(btnThemTheLoai);
             buttons.Controls.Add(btnSua);
             buttons.Controls.Add(btnXoa);
 

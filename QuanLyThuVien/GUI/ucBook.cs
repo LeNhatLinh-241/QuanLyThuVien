@@ -37,11 +37,198 @@ namespace QuanLyThuVien.UI.UserControls
 
         private void LoadCategories()
         {
+            var selectedCategoryId = cboTheLoai.SelectedValue is int currentCategoryId
+                ? currentCategoryId
+                : (int?)null;
             var categories = _categoryBLL.GetAll();
             cboTheLoai.DisplayMember = nameof(CategoryDTO.TenTheLoai);
             cboTheLoai.ValueMember = nameof(CategoryDTO.CategoryID);
             cboTheLoai.DataSource = categories;
             cboTheLoai.Enabled = categories.Count > 0;
+
+            if (selectedCategoryId.HasValue &&
+                categories.Any(category => category.CategoryID == selectedCategoryId.Value))
+            {
+                cboTheLoai.SelectedValue = selectedCategoryId.Value;
+            }
+
+            tvTheLoai.BeginUpdate();
+            try
+            {
+                tvTheLoai.Nodes.Clear();
+                var nodes = categories.ToDictionary(
+                    category => category.CategoryID,
+                    category => new TreeNode(category.TenTheLoai)
+                    {
+                        Tag = category.CategoryID
+                    });
+
+                foreach (var category in categories)
+                {
+                    var node = nodes[category.CategoryID];
+                    if (category.ParentID.HasValue &&
+                        nodes.TryGetValue(category.ParentID.Value, out var parentNode))
+                    {
+                        parentNode.Nodes.Add(node);
+                    }
+                    else
+                    {
+                        tvTheLoai.Nodes.Add(node);
+                    }
+                }
+
+                tvTheLoai.ExpandAll();
+                lblCategoryCount.Text = $"{categories.Count} nhóm";
+            }
+            finally
+            {
+                tvTheLoai.EndUpdate();
+            }
+        }
+
+        private void AddBookCategory(object? sender, EventArgs e)
+        {
+            var categoryName = PromptCategoryName();
+            if (categoryName == null)
+            {
+                return;
+            }
+
+            var parentId = tvTheLoai.SelectedNode?.Tag is int selectedCategoryId
+                ? selectedCategoryId
+                : (int?)null;
+
+            try
+            {
+                var newCategoryId = _categoryBLL.Add(new CategoryDTO
+                {
+                    TenTheLoai = categoryName,
+                    ParentID = parentId
+                });
+
+                LoadCategories();
+                var newNode = FindCategoryNode(tvTheLoai.Nodes, newCategoryId);
+                if (newNode != null)
+                {
+                    tvTheLoai.SelectedNode = newNode;
+                    newNode.EnsureVisible();
+                }
+
+                MessageBox.Show(
+                    this,
+                    "Đã thêm thể loại sách.",
+                    "Thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    ex.Message,
+                    "Không thể thêm thể loại",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (SqliteException ex)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Không thể lưu thể loại sách: {ex.Message}",
+                    "Lỗi cơ sở dữ liệu",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private string? PromptCategoryName()
+        {
+            var parentName = tvTheLoai.SelectedNode?.Text;
+            using var dialog = new Form
+            {
+                Text = "Thêm thể loại sách",
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                StartPosition = FormStartPosition.CenterParent,
+                MinimizeBox = false,
+                MaximizeBox = false,
+                ShowInTaskbar = false,
+                ClientSize = new Size(380, 150)
+            };
+
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 3,
+                Padding = new Padding(12)
+            };
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+            layout.Controls.Add(new Label
+            {
+                Text = parentName == null
+                    ? "Nhập tên thể loại mới (thể loại gốc):"
+                    : $"Nhập tên thể loại con của \"{parentName}\":",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, 0);
+
+            var nameTextBox = new TextBox
+            {
+                Dock = DockStyle.Fill
+            };
+            layout.Controls.Add(nameTextBox, 0, 1);
+
+            var buttons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false
+            };
+            var addButton = new Button
+            {
+                Text = "Thêm",
+                DialogResult = DialogResult.OK,
+                AutoSize = true
+            };
+            var cancelButton = new Button
+            {
+                Text = "Hủy",
+                DialogResult = DialogResult.Cancel,
+                AutoSize = true
+            };
+            buttons.Controls.Add(cancelButton);
+            buttons.Controls.Add(addButton);
+            layout.Controls.Add(buttons, 0, 2);
+
+            dialog.AcceptButton = addButton;
+            dialog.CancelButton = cancelButton;
+            dialog.Controls.Add(layout);
+
+            return dialog.ShowDialog(this) == DialogResult.OK
+                ? nameTextBox.Text
+                : null;
+        }
+
+        private static TreeNode? FindCategoryNode(TreeNodeCollection nodes, int categoryId)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Tag is int currentCategoryId && currentCategoryId == categoryId)
+                {
+                    return node;
+                }
+
+                var childNode = FindCategoryNode(node.Nodes, categoryId);
+                if (childNode != null)
+                {
+                    return childNode;
+                }
+            }
+
+            return null;
         }
 
         private void LoadBookTitles(int? selectedTitleId = null)
