@@ -15,6 +15,7 @@ namespace QuanLyThuVien.UI.UserControls
         private TreeView tvTheLoai = null!;
         private Label lblCategoryCount = null!;
         private Button btnThemTheLoai = null!;
+        private Button btnSuaTheLoai = null!;
         private Button btnThemDauSach = null!;
         private Button btnSuaDauSach = null!;
         private Button btnXoaDauSach = null!;
@@ -185,13 +186,14 @@ namespace QuanLyThuVien.UI.UserControls
             btnThemTheLoai.Height = 48;
             btnThemTheLoai.Click += AddBookCategory;
 
-            var btnSua = CreateButton(
+            btnSuaTheLoai = CreateButton(
                 "Sửa",
                 Color.White,
                 Color.FromArgb(30, 41, 59),
                 90
             );
-            btnSua.Height = 48;
+            btnSuaTheLoai.Height = 48;
+            btnSuaTheLoai.Click += UpdateBookCategory;
 
             var btnXoa = CreateButton(
                 "Xóa thể loại",
@@ -200,7 +202,7 @@ namespace QuanLyThuVien.UI.UserControls
                 200
             );
             
-            foreach (Button btn in new[] { btnThemTheLoai, btnSua, btnXoa })
+            foreach (Button btn in new[] { btnThemTheLoai, btnSuaTheLoai, btnXoa })
             {
                 btn.Height = 48;
                 btn.Margin = new Padding(2);
@@ -208,7 +210,7 @@ namespace QuanLyThuVien.UI.UserControls
             }
             
             buttons.Controls.Add(btnThemTheLoai);
-            buttons.Controls.Add(btnSua);
+            buttons.Controls.Add(btnSuaTheLoai);
             buttons.Controls.Add(btnXoa);
 
             layout.Controls.Add(buttons, 0, 3);

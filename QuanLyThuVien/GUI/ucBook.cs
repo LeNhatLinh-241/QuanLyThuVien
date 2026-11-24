@@ -141,12 +141,94 @@ namespace QuanLyThuVien.UI.UserControls
             }
         }
 
-        private string? PromptCategoryName()
+        private void UpdateBookCategory(object? sender, EventArgs e)
+        {
+            if (tvTheLoai.SelectedNode?.Tag is not int categoryId)
+            {
+                    MessageBox.Show(
+                        this,
+                        "Vui lòng chọn thể loại cần sửa trong cây thể loại.",
+                        "Chưa chọn thể loại",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+            }
+
+            var category = _categoryBLL.GetById(categoryId);
+            if (category == null)
+            {
+                    MessageBox.Show(
+                        this,
+                        "Không tìm thấy thể loại được chọn.",
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+            }
+
+            var categoryName = PromptCategoryName(category.TenTheLoai);
+            if (categoryName == null)
+            {
+                    return;
+            }
+
+            category.TenTheLoai = categoryName;
+
+            try
+            {
+                    var updated = _categoryBLL.Update(category);
+                    if (!updated)
+                    {
+                        MessageBox.Show(
+                            this,
+                            "Không thể cập nhật thể loại sách.",
+                            "Thất bại",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    LoadCategories();
+                    var updatedNode = FindCategoryNode(tvTheLoai.Nodes, categoryId);
+                    if (updatedNode != null)
+                    {
+                        tvTheLoai.SelectedNode = updatedNode;
+                        updatedNode.EnsureVisible();
+                    }
+
+                    MessageBox.Show(
+                        this,
+                        "Đã cập nhật tên thể loại sách.",
+                        "Thành công",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                    MessageBox.Show(
+                        this,
+                        ex.Message,
+                        "Không thể sửa thể loại",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+            }
+            catch (SqliteException ex)
+            {
+                    MessageBox.Show(
+                        this,
+                        $"Không thể cập nhật thể loại sách: {ex.Message}",
+                        "Lỗi cơ sở dữ liệu",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+            }
+        }
+
+        private string? PromptCategoryName(string? currentName = null)
         {
             var parentName = tvTheLoai.SelectedNode?.Text;
             using var dialog = new Form
             {
-                Text = "Thêm thể loại sách",
+                    Text = currentName == null ? "Thêm thể loại sách" : "Sửa thể loại sách",
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 StartPosition = FormStartPosition.CenterParent,
                 MinimizeBox = false,
@@ -168,16 +250,19 @@ namespace QuanLyThuVien.UI.UserControls
 
             layout.Controls.Add(new Label
             {
-                Text = parentName == null
-                    ? "Nhập tên thể loại mới (thể loại gốc):"
-                    : $"Nhập tên thể loại con của \"{parentName}\":",
+                Text = currentName == null
+                    ? parentName == null
+                        ? "Nhập tên thể loại mới (thể loại gốc):"
+                        : $"Nhập tên thể loại con của \"{parentName}\":"
+                    : "Nhập tên mới cho thể loại:",
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleLeft
             }, 0, 0);
 
             var nameTextBox = new TextBox
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Text = currentName ?? string.Empty
             };
             layout.Controls.Add(nameTextBox, 0, 1);
 
@@ -189,7 +274,7 @@ namespace QuanLyThuVien.UI.UserControls
             };
             var addButton = new Button
             {
-                Text = "Thêm",
+                Text = currentName == null ? "Thêm" : "Lưu",
                 DialogResult = DialogResult.OK,
                 AutoSize = true
             };
