@@ -4,11 +4,13 @@ using Microsoft.Data.Sqlite;
 
 namespace QuanLyThuVien.DAO;
 
-
-   public class DatabaseConnect
-    {
+// Quản lý chuỗi kết nối SQLite và khởi tạo cấu trúc cơ sở dữ liệu.
+public class DatabaseConnect
+{
+        // Tệp cơ sở dữ liệu được lưu trong thư mục chạy ứng dụng.
         private readonly string connectionString = "Data Source=thuvien.db;";
 
+        // Tạo kết nối mới cho mỗi thao tác truy vấn hoặc khởi tạo.
         public SqliteConnection GetConnection()
         {
             return new SqliteConnection(connectionString);
@@ -16,13 +18,14 @@ namespace QuanLyThuVien.DAO;
 
         public void InitializeDatabase()
         {
+            // Mở kết nối và chạy lần lượt các lệnh tạo bảng.
             using (var connection = GetConnection())
             {
                 connection.Open();
 
                 using (var command = connection.CreateCommand())
                 {
-                    //bảng Users
+                    // Tạo bảng lưu tài khoản và thông tin người dùng.
                     command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS Users (
                             ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +38,7 @@ namespace QuanLyThuVien.DAO;
                         );";
                     command.ExecuteNonQuery();
 
-                    //bảng Categories
+                    // Tạo bảng thể loại có quan hệ cha-con.
                     command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS Categories (
                             CategoryID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +49,7 @@ namespace QuanLyThuVien.DAO;
                         );";
                     command.ExecuteNonQuery();
 
-                    //bảng BookTitles
+                    // Tạo bảng đầu sách.
                     command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS BookTitles (
                             TitleID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,7 +62,7 @@ namespace QuanLyThuVien.DAO;
                         );";
                     command.ExecuteNonQuery();
 
-                    //bảng BookCopies
+                    // Tạo bảng cuốn vật lý và trạng thái.
                     command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS BookCopies (
                             CopyID TEXT PRIMARY KEY,
@@ -69,7 +72,7 @@ namespace QuanLyThuVien.DAO;
                         );";
                     command.ExecuteNonQuery();
 
-                    //bảngBorrowRecords
+                    // Tạo bảng phiếu mượn/trả.
                     command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS BorrowRecords (
                             RecordID INTEGER PRIMARY KEY AUTOINCREMENT,

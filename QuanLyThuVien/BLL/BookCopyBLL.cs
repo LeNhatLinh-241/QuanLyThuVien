@@ -3,6 +3,7 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.BLL;
 
+// BLL kiểm tra mã đầu sách, số lượng và trạng thái cuốn vật lý.
 public class BookCopyBLL
 {
     private readonly BookCopyDAO _bookCopyDAO = new();

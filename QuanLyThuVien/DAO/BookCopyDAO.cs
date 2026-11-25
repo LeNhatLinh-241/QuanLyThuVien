@@ -4,12 +4,15 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.DAO;
 
+// Truy cập và sinh mã cho các cuốn sách vật lý.
 public class BookCopyDAO
 {
+    // Sinh mã SACHxx_n, tránh trùng mã với các cuốn đã tồn tại.
     private readonly DatabaseConnect _databaseConnect = new();
 
     public List<BookCopyDTO> GetByTitleId(int titleId)
     {
+        // Lấy toàn bộ cuốn thuộc một đầu sách để hiển thị và đếm trạng thái.
         using var connection = _databaseConnect.GetConnection();
         return connection.Query<BookCopyDTO>(
             @"SELECT CopyID, TitleID, TrangThai
@@ -21,6 +24,7 @@ public class BookCopyDAO
 
     public List<BookCopyDTO> AddCopies(int titleId, int quantity)
     {
+        // Kiểm tra đầu vào và tạo cuốn trong transaction để tránh dữ liệu dở dang.
         if (titleId <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(titleId), "Mã đầu sách không hợp lệ.");
@@ -110,6 +114,7 @@ public class BookCopyDAO
 
     public bool UpdateStatus(string copyId, int status)
     {
+        // Cập nhật trạng thái cuốn sách: rảnh, đang mượn hoặc mất/hỏng.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE BookCopies

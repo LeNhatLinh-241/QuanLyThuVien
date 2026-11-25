@@ -3,12 +3,14 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.DAO;
 
+// Truy cập trực tiếp dữ liệu thể loại trong bảng Categories.
 public class CategoryDAO
 {
     private readonly DatabaseConnect _databaseConnect = new();
 
     public List<CategoryDTO> GetAll()
     {
+        // Query lấy toàn bộ thể loại chưa xóa và chuyển kết quả thành danh sách DTO.
         using var connection = _databaseConnect.GetConnection();
         return connection.Query<CategoryDTO>(
             @"SELECT CategoryID, TenTheLoai, ParentID, IsDeleted
@@ -19,6 +21,7 @@ public class CategoryDAO
 
     public CategoryDTO? GetById(int categoryId)
     {
+        // Query lấy một thể loại theo mã; trả về null nếu không còn tồn tại.
         using var connection = _databaseConnect.GetConnection();
         return connection.QuerySingleOrDefault<CategoryDTO>(
             @"SELECT CategoryID, TenTheLoai, ParentID, IsDeleted
@@ -29,6 +32,7 @@ public class CategoryDAO
 
     public int Insert(CategoryDTO category)
     {
+        // Thêm thể loại mới, sau đó lấy mã tự tăng để GUI chọn node vừa tạo.
         using var connection = _databaseConnect.GetConnection();
         connection.Open();
         connection.Execute(
@@ -44,6 +48,7 @@ public class CategoryDAO
 
     public bool Update(CategoryDTO category)
     {
+        // Cập nhật tên và thể loại cha nếu bản ghi chưa bị xóa.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE Categories
@@ -59,6 +64,7 @@ public class CategoryDAO
 
     public bool Delete(int categoryId)
     {
+        // Xóa mềm chỉ khi không còn thể loại con và không còn đầu sách đang dùng.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE Categories

@@ -3,6 +3,7 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.BLL;
 
+// BLL chứa nghiệp vụ và kiểm tra dữ liệu thể loại trước khi truy cập DAO.
 public class CategoryBLL
 {
     private readonly CategoryDAO _categoryDAO = new();
@@ -24,6 +25,7 @@ public class CategoryBLL
 
     public int Add(CategoryDTO category)
     {
+        // Kiểm tra tên và quan hệ cha-con trước khi thêm thể loại.
         ValidateCategory(category);
         ValidateParent(category.ParentID);
         return _categoryDAO.Insert(category);
@@ -31,6 +33,7 @@ public class CategoryBLL
 
     public bool Update(CategoryDTO category)
     {
+        // Kiểm tra dữ liệu và ngăn vòng lặp cha/con trước khi cập nhật.
         ValidateCategory(category);
 
         if (category.CategoryID <= 0)
@@ -54,6 +57,7 @@ public class CategoryBLL
 
     private static void ValidateCategory(CategoryDTO category)
     {
+        // Kiểm tra tên bắt buộc và loại bỏ khoảng trắng thừa.
         ArgumentNullException.ThrowIfNull(category);
 
         if (string.IsNullOrWhiteSpace(category.TenTheLoai))
@@ -66,6 +70,7 @@ public class CategoryBLL
 
     private void ValidateParent(int? parentId, int? categoryId = null)
     {
+        // Duyệt chuỗi cha để phát hiện tự trỏ hoặc vòng lặp cây.
         var currentParentId = parentId;
         var visited = new HashSet<int>();
 

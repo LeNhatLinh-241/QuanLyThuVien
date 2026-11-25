@@ -3,6 +3,7 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.BLL;
 
+// BLL kiểm tra dữ liệu đầu sách và điều phối thao tác với DAO.
 public class BookTitleBLL
 {
     private readonly BookTitleDAO _bookTitleDAO = new();
@@ -65,6 +66,7 @@ public class BookTitleBLL
 
     private void ValidateBookTitle(BookTitleDTO bookTitle)
     {
+        // Kiểm tra tên, giá, thể loại và chuẩn hóa chuỗi trước khi lưu.
         ArgumentNullException.ThrowIfNull(bookTitle);
 
         if (string.IsNullOrWhiteSpace(bookTitle.TenSach))
