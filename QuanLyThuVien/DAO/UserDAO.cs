@@ -164,7 +164,7 @@ public class UserDAO
             using (var command = connection.CreateCommand())
             {
                 command.CommandText =
-                    "SECLECT * FROM Users WHERE Username = @user AND Password = @pass AND IsActive = 1";
+                    "SELECT * FROM Users WHERE Username = @user AND Password = @pass AND IsActive = 1";
                 command.Parameters.AddWithValue("@user", username);
                 command.Parameters.AddWithValue("@pass", password);
                 using (var reader = command.ExecuteReader())
@@ -185,6 +185,82 @@ public class UserDAO
 
         return null;
     }
+    public List<UserDTO> GetAllUsersForAdmin()
+{
+    var list = new List<UserDTO>();
+    using var connection = db.GetConnection();
+    connection.Open();
+    using var command = connection.CreateCommand();
+    command.CommandText = "SELECT ID, Username, Password, Role, HoTen, SoDienThoai, IsActive FROM Users ORDER BY ID ASC";
+    using var reader = command.ExecuteReader();
+    while (reader.Read())
+    {
+        list.Add(new UserDTO
+        {
+            ID = reader.GetInt32(0),
+            Username = reader.IsDBNull(1) ? "" : reader.GetString(1),
+            Password = reader.IsDBNull(2) ? "" : reader.GetString(2),
+            Role = reader.GetString(3),
+            HoTen = reader.GetString(4),
+            SoDienThoai = reader.IsDBNull(5) ? "" : reader.GetString(5),
+            IsActive = reader.GetInt32(6)
+        });
+    }
+    return list;
+}
+
+public bool InsertFullUser(UserDTO user)
+{
+    using var connection = db.GetConnection();
+    connection.Open();
+    using var command = connection.CreateCommand();
+    command.CommandText = @"
+        INSERT INTO Users (Username, Password, Role, HoTen, SoDienThoai, IsActive)
+        VALUES (@user, @pass, @role, @hoten, @sdt, @active)";
+    command.Parameters.AddWithValue("@user", string.IsNullOrWhiteSpace(user.Username) ? DBNull.Value : user.Username);
+    command.Parameters.AddWithValue("@pass", string.IsNullOrWhiteSpace(user.Password) ? DBNull.Value : user.Password);
+    command.Parameters.AddWithValue("@role", user.Role);
+    command.Parameters.AddWithValue("@hoten", user.HoTen);
+    command.Parameters.AddWithValue("@sdt", string.IsNullOrWhiteSpace(user.SoDienThoai) ? DBNull.Value : user.SoDienThoai);
+    command.Parameters.AddWithValue("@active", user.IsActive);
+    return command.ExecuteNonQuery() > 0;
+}
+
+public bool UpdateFullUser(UserDTO user)
+{
+    using var connection = db.GetConnection();
+    connection.Open();
+    using var command = connection.CreateCommand();
+    command.CommandText = @"
+        UPDATE Users
+        SET Username = @user,
+            Password = @pass,
+            Role = @role,
+            HoTen = @hoten,
+            SoDienThoai = @sdt,
+            IsActive = @active
+        WHERE ID = @id";
+    command.Parameters.AddWithValue("@user", string.IsNullOrWhiteSpace(user.Username) ? DBNull.Value : user.Username);
+    command.Parameters.AddWithValue("@pass", string.IsNullOrWhiteSpace(user.Password) ? DBNull.Value : user.Password);
+    command.Parameters.AddWithValue("@role", user.Role);
+    command.Parameters.AddWithValue("@hoten", user.HoTen);
+    command.Parameters.AddWithValue("@sdt", string.IsNullOrWhiteSpace(user.SoDienThoai) ? DBNull.Value : user.SoDienThoai);
+    command.Parameters.AddWithValue("@active", user.IsActive);
+    command.Parameters.AddWithValue("@id", user.ID);
+    return command.ExecuteNonQuery() > 0;
+}
+
+public bool SetUserActive(int id, int isActive)
+{
+    using var connection = db.GetConnection();
+    connection.Open();
+    using var command = connection.CreateCommand();
+    command.CommandText = "UPDATE Users SET IsActive = @active WHERE ID = @id";
+    command.Parameters.AddWithValue("@active", isActive);
+    command.Parameters.AddWithValue("@id", id);
+    return command.ExecuteNonQuery() > 0;
+}
+    
     
     
     

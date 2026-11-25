@@ -64,5 +64,36 @@ public class UserBLL
         if(string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) return null;
         return userDao.CheckLogin(username, password);
     }
-    
+    public List<UserDTO> LayTatCaNguoiDung()
+    {
+        return userDao.GetAllUsersForAdmin();
+    }
+
+    public string ThemNguoiDung(UserDTO user)
+    {
+        if (string.IsNullOrWhiteSpace(user.HoTen))
+            return "Họ và tên không được để trống!";
+
+        if ((user.Role == "Admin" || user.Role == "ThuThu") &&
+            (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password)))
+            return "Tài khoản Admin / Thủ thư bắt buộc phải có Username và Mật khẩu!";
+
+        return userDao.InsertFullUser(user) ? "Thêm mới thành công!" : "Lỗi khi thêm người dùng.";
+    }
+
+    public string SuaNguoiDung(UserDTO user)
+    {
+        if (user.ID <= 0)
+            return "Vui lòng chọn một độc giả trong danh sách để sửa!";
+
+        if (string.IsNullOrWhiteSpace(user.HoTen))
+            return "Họ và tên không được để trống!";
+
+        return userDao.UpdateFullUser(user) ? "Cập nhật thông tin thành công!" : "Lỗi khi cập nhật thông tin.";
+    }
+
+    public bool DoiTrangThaiThe(int id, int isActive)
+    {
+        return userDao.SetUserActive(id, isActive);
+    }
 }
