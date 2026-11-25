@@ -4,16 +4,19 @@ using Microsoft.Data.Sqlite;
 
 namespace QuanLyThuVien.DAO;
 
-
-   public class DatabaseConnect
-    {
+// Lớp chịu trách nhiệm tạo kết nối và khởi tạo cấu trúc cơ sở dữ liệu SQLite.
+public class DatabaseConnect
+{
+        // Đường dẫn SQLite mặc định; tệp thuvien.db nằm trong thư mục chạy ứng dụng.
         private readonly string connectionString = "Data Source=thuvien.db;";
 
+        // Tạo đối tượng kết nối mới để mỗi DAO sử dụng và đóng riêng.
         public SqliteConnection GetConnection()
         {
             return new SqliteConnection(connectionString);
         }
 
+        // Tạo tất cả bảng nếu chưa tồn tại khi chương trình khởi động.
         public void InitializeDatabase()
         {
             using (var connection = GetConnection())

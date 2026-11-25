@@ -3,6 +3,7 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.DAO;
 
+// DAO truy xuất dữ liệu đầu sách và xử lý giao dịch thêm đầu sách cùng cuốn vật lý.
 public class BookTitleDAO
 {
     private readonly DatabaseConnect _databaseConnect = new();
@@ -10,6 +11,7 @@ public class BookTitleDAO
 
     public List<BookTitleDTO> GetAll()
     {
+        // Lấy các đầu sách còn hiệu lực, sắp xếp theo tên để hiển thị trên bảng.
         using var connection = _databaseConnect.GetConnection();
         return connection.Query<BookTitleDTO>(
             @"SELECT TitleID, TenSach, TacGia, GiaTien, CategoryID, IsDeleted
@@ -47,6 +49,7 @@ public class BookTitleDAO
 
     public (int TitleId, List<BookCopyDTO> Copies) InsertWithCopies(BookTitleDTO bookTitle, int quantity)
     {
+        // Mở một giao dịch để thêm đầu sách và toàn bộ cuốn vật lý hoặc hủy cả hai nếu lỗi.
         using var connection = _databaseConnect.GetConnection();
         connection.Open();
         using var transaction = connection.BeginTransaction();
@@ -78,6 +81,7 @@ public class BookTitleDAO
 
     public bool Update(BookTitleDTO bookTitle)
     {
+        // Cập nhật thông tin đầu sách, giữ nguyên bản ghi đã bị xóa.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE BookTitles
@@ -98,6 +102,7 @@ public class BookTitleDAO
 
     public bool Delete(int titleId)
     {
+        // Xóa mềm đầu sách nếu không có cuốn đang được đánh dấu mượn hoặc có phiếu mượn chưa trả.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE BookTitles

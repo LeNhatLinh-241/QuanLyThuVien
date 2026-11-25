@@ -3,6 +3,7 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.BLL;
 
+// BLL kiểm tra dữ liệu đầu sách trước khi gọi DAO lưu hoặc cập nhật.
 public class BookTitleBLL
 {
     private readonly BookTitleDAO _bookTitleDAO = new();
@@ -31,6 +32,7 @@ public class BookTitleBLL
 
     public (int TitleId, List<BookCopyDTO> Copies) AddWithCopies(BookTitleDTO bookTitle, int quantity)
     {
+        // Kiểm tra đầu sách và số lượng rồi tạo đầu sách cùng các cuốn vật lý trong giao dịch.
         ValidateBookTitle(bookTitle);
 
         if (quantity <= 0)
@@ -65,6 +67,7 @@ public class BookTitleBLL
 
     private void ValidateBookTitle(BookTitleDTO bookTitle)
     {
+        // Kiểm tra tên, giá, thể loại và chuẩn hóa chuỗi trước khi lưu.
         ArgumentNullException.ThrowIfNull(bookTitle);
 
         if (string.IsNullOrWhiteSpace(bookTitle.TenSach))
