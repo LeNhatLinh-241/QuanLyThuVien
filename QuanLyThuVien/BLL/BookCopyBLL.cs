@@ -3,7 +3,6 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.BLL;
 
-// BLL chứa nghiệp vụ kiểm tra dữ liệu cuốn sách vật lý.
 public class BookCopyBLL
 {
     private readonly BookCopyDAO _bookCopyDAO = new();
@@ -21,7 +20,6 @@ public class BookCopyBLL
 
     public List<BookCopyDTO> AddCopies(int titleId, int quantity)
     {
-        // Kiểm tra đầu sách tồn tại rồi mới thêm số cuốn vật lý được yêu cầu.
         if (titleId <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(titleId), "Mã đầu sách không hợp lệ.");
@@ -42,7 +40,6 @@ public class BookCopyBLL
 
     public bool UpdateStatus(string copyId, int status)
     {
-        // Chuẩn hóa mã cuốn và chỉ cho phép trạng thái 0, 1 hoặc 2.
         if (string.IsNullOrWhiteSpace(copyId))
         {
             throw new ArgumentException("Mã cuốn sách không được để trống.", nameof(copyId));

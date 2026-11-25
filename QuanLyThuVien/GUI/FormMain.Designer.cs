@@ -3,12 +3,12 @@
 partial class FormMain
 {
     /// <summary>
-    ///  Biến quản lý tài nguyên do Windows Forms Designer tạo.
+    ///  Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
     /// <summary>
-    ///  Giải phóng tài nguyên khi form được đóng.
+    ///  Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing)
@@ -29,7 +29,6 @@ partial class FormMain
     /// </summary>
     private void InitializeComponent()
     {
-        // Tạo bộ chứa tài nguyên và thiết lập kích thước mặc định của form.
         components = new System.ComponentModel.Container();
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(800, 450);

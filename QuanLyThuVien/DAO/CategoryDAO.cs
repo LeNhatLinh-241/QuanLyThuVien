@@ -3,13 +3,10 @@ using QuanLyThuVien.DTO;
 
 namespace QuanLyThuVien.DAO;
 
-// DAO truy xuất và thay đổi dữ liệu thể loại trực tiếp trong SQLite.
 public class CategoryDAO
 {
-    // Tạo kết nối dùng chung cho các truy vấn thể loại.
     private readonly DatabaseConnect _databaseConnect = new();
 
-    // Lấy danh sách thể loại chưa bị xóa, sắp theo tên.
     public List<CategoryDTO> GetAll()
     {
         using var connection = _databaseConnect.GetConnection();
@@ -22,7 +19,6 @@ public class CategoryDAO
 
     public CategoryDTO? GetById(int categoryId)
     {
-        // Tìm một thể loại theo mã và chỉ trả về nếu chưa bị xóa.
         using var connection = _databaseConnect.GetConnection();
         return connection.QuerySingleOrDefault<CategoryDTO>(
             @"SELECT CategoryID, TenTheLoai, ParentID, IsDeleted
@@ -33,7 +29,6 @@ public class CategoryDAO
 
     public int Insert(CategoryDTO category)
     {
-        // Thêm thể loại mới và lấy mã tự tăng vừa được tạo để đưa ngược lên cây.
         using var connection = _databaseConnect.GetConnection();
         connection.Open();
         connection.Execute(
@@ -49,7 +44,6 @@ public class CategoryDAO
 
     public bool Update(CategoryDTO category)
     {
-        // Cập nhật tên và thể loại cha, không cập nhật bản ghi đã bị xóa.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE Categories
@@ -65,7 +59,6 @@ public class CategoryDAO
 
     public bool Delete(int categoryId)
     {
-        // Xóa mềm: đặt IsDeleted = 1 chỉ khi không còn thể loại con và không còn đầu sách đang dùng.
         using var connection = _databaseConnect.GetConnection();
         return connection.Execute(
             @"UPDATE Categories
