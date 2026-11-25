@@ -5,6 +5,7 @@ namespace QuanLyThuVien.UI.UserControls
 {
     partial class ucBook
     {
+        // Các tham chiếu điều khiển được Designer tạo để code logic truy cập bằng tên.
         private DataGridView dgvDanhSachSach = null!;
         private DataGridView dgvCuonSachVatLy = null!;
         private TextBox txtTenDauSach = null!;
@@ -22,9 +23,13 @@ namespace QuanLyThuVien.UI.UserControls
         private Button btnXoaDauSach = null!;
         private Label lblPhysicalCopiesHeader = null!;
         private Label lblPhysicalCopiesSummary = null!;
+        private Button btnPhysicalPrevious = null!;
+        private Button btnPhysicalNext = null!;
+        private Label lblPhysicalPage = null!;
 
         private void InitializeComponent()
         {
+            // Tạo bố cục toàn màn hình: tiêu đề, nội dung và chân trang.
             SuspendLayout();
 
             BackColor = Color.FromArgb(241, 245, 249);
@@ -120,6 +125,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private Control CreateCategoriesPanel()
         {
+            // Tạo panel bên trái chứa cây thể loại và nút thêm/sửa/xóa.
             var panel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -227,6 +233,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private Control CreateBookTitlesPanel()
         {
+            // Tạo panel bên phải gồm thông tin đầu sách và danh sách cuốn vật lý.
             var panel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -338,6 +345,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private Control CreatePhysicalCopiesPanel()
         {
+            // Tạo phần hiển thị bảng cuốn vật lý, trạng thái và điều hướng trang.
             var panel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -401,8 +409,10 @@ namespace QuanLyThuVien.UI.UserControls
                 AutoSize = true,
                 Margin = Padding.Empty
             };
-            pageControls.Controls.Add(CreatePageButton("‹ Trước", false));
-            pageControls.Controls.Add(new Label
+            btnPhysicalPrevious = CreatePageButton("‹ Trước", false);
+            btnPhysicalPrevious.Click += PhysicalPreviousPage;
+            pageControls.Controls.Add(btnPhysicalPrevious);
+            lblPhysicalPage = new Label
             {
                 Text = "1",
                 Width = 60,
@@ -411,8 +421,11 @@ namespace QuanLyThuVien.UI.UserControls
                 BackColor = Color.FromArgb(37, 99, 235),
                 ForeColor = Color.White,
                 Margin = new Padding(2, 2, 2, 0)
-            });
-            pageControls.Controls.Add(CreatePageButton("Sau ›", true));
+            };
+            pageControls.Controls.Add(lblPhysicalPage);
+            btnPhysicalNext = CreatePageButton("Sau ›", true);
+            btnPhysicalNext.Click += PhysicalNextPage;
+            pageControls.Controls.Add(btnPhysicalNext);
             pagination.Controls.Add(pageControls, 1, 0);
             layout.Controls.Add(pagination, 0, 2);
 
@@ -440,6 +453,7 @@ namespace QuanLyThuVien.UI.UserControls
        
         private Control CreateBookFields()
         {
+            // Tạo năm ô nhập dùng để thêm hoặc sửa đầu sách.
             var fields = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -511,6 +525,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static Control CreateField(string label, Control editor)
         {
+            // Gói nhãn và một control nhập dữ liệu thành từng ô trên giao diện.
             var layout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -545,6 +560,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static DataGridView CreateBookTitlesGrid()
         {
+            // Tạo bảng đầu sách với các cột mã, tên, tác giả, thể loại, giá và số bản.
             var grid = new DataGridView
             {
                 Name = "dgvDanhSachSach",
@@ -594,6 +610,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static DataGridView CreatePhysicalCopiesGrid()
         {
+            // Tạo bảng cuốn vật lý với mã vạch và trạng thái từng cuốn.
             var grid = new DataGridView
             {
                 Name = "dgvCuonSachVatLy",
@@ -642,6 +659,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static void AddGridColumn(DataGridView grid, string header, float fillWeight)
         {
+            // Thêm một cột văn bản không cho sắp xếp và đặt tỷ lệ chiều rộng.
             grid.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = header,
@@ -652,6 +670,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static Label CreateSectionTitle(string text)
         {
+            // Tạo kiểu tiêu đề thống nhất cho từng vùng của màn hình.
             return new Label
             {
                 Text = text,
@@ -664,6 +683,7 @@ namespace QuanLyThuVien.UI.UserControls
 
         private static Button CreateButton(string text, Color backColor, Color foreColor, int width)
         {
+            // Tạo nút bấm thống nhất màu sắc, kích thước và kiểu chữ.
             return new Button
             {
                 Text = text,

@@ -18,6 +18,11 @@ namespace QuanLyThuVien.UI.UserControls
         private readonly CategoryBLL _categoryBLL = new();
         // Cờ tránh xử lý sự kiện chọn dòng trong lúc bảng đang được nạp dữ liệu
         private bool _isLoadingBookTitles;
+        // Số cuốn vật lý hiển thị trên mỗi trang.
+        private const int PhysicalCopiesPageSize = 10;
+        // Đầu sách đang hiển thị và trang cuốn vật lý hiện tại.
+        private int _currentCopiesTitleId;
+        private int _physicalCopiesPage = 1;
 
         // Hàm khởi tạo UserControl, được gọi khi màn hình được tạo
         public ucBook()
@@ -486,6 +491,7 @@ namespace QuanLyThuVien.UI.UserControls
                     // Cập nhật phần trạng thái bảng cuốn vật lý
                     lblPhysicalCopiesHeader.Text = "Chưa có đầu sách";
                     lblPhysicalCopiesSummary.Text = "Không có cuốn sách vật lý";
+                    ResetPhysicalPagination();
                     return;
                 }
 
@@ -569,6 +575,13 @@ namespace QuanLyThuVien.UI.UserControls
 
         private void DisplayCopies(int titleId)
         {
+            // Chọn đầu sách mới thì quay về trang đầu tiên.
+            if (_currentCopiesTitleId != titleId)
+            {
+                _currentCopiesTitleId = titleId;
+                _physicalCopiesPage = 1;
+            }
+
             // Tạo mã đầu sách để hiển thị trong vùng cuốn vật lý
             var bookCode = $"SACH{titleId:D2}";
             // Lấy tất cả cuốn vật lý thuộc đầu sách
@@ -576,7 +589,16 @@ namespace QuanLyThuVien.UI.UserControls
 
             // Xóa các dòng cuốn vật lý cũ trước khi nạp dữ liệu mới
             dgvCuonSachVatLy.Rows.Clear();
-            foreach (var copy in copies)
+
+            // Tính tổng số trang và xác định tập cuốn thuộc trang hiện tại.
+            var totalPages = Math.Max(1, (int)Math.Ceiling(copies.Count / (double)PhysicalCopiesPageSize));
+            _physicalCopiesPage = Math.Min(_physicalCopiesPage, totalPages);
+            var pageCopies = copies
+                .Skip((_physicalCopiesPage - 1) * PhysicalCopiesPageSize)
+                .Take(PhysicalCopiesPageSize)
+                .ToList();
+
+            foreach (var copy in pageCopies)
             {
                 // Thêm mã vạch, đầu sách, trạng thái và ghi chú vào bảng
                 var rowIndex = dgvCuonSachVatLy.Rows.Add(
@@ -594,11 +616,52 @@ namespace QuanLyThuVien.UI.UserControls
             }
 
             lblPhysicalCopiesHeader.Text = $"Mã vạch sinh tự động cho {bookCode}";
-            lblPhysicalCopiesSummary.Text = copies.Count == 0
-                ? "Không có cuốn sách vật lý"
-                : $"Hiển thị 1–{copies.Count} / {copies.Count} bản"
+            if (copies.Count == 0)
+            {
+                lblPhysicalCopiesSummary.Text = "Không có cuốn sách vật lý";
+            }
+            else
+            {
+                var firstIndex = ((_physicalCopiesPage - 1) * PhysicalCopiesPageSize) + 1;
+                var lastIndex = Math.Min(_physicalCopiesPage * PhysicalCopiesPageSize, copies.Count);
+                lblPhysicalCopiesSummary.Text =
+                    $"Hiển thị {firstIndex}–{lastIndex} / {copies.Count} bản"
                     + $" | {copies.Count(copy => copy.TrangThai == 1)} đang mượn"
                     + $" | {copies.Count(copy => copy.TrangThai == 2)} mất/hỏng";
+            }
+
+            lblPhysicalPage.Text = copies.Count == 0
+                ? "0"
+                : $"{_physicalCopiesPage}/{totalPages}";
+            btnPhysicalPrevious.Enabled = copies.Count > 0 && _physicalCopiesPage > 1;
+            btnPhysicalNext.Enabled = copies.Count > 0 && _physicalCopiesPage < totalPages;
+        }
+
+        private void PhysicalPreviousPage(object? sender, EventArgs e)
+        {
+            // Giảm trang và nạp lại bảng; nút đã tự khóa ở trang đầu.
+            if (_physicalCopiesPage > 1)
+            {
+                _physicalCopiesPage--;
+                DisplayCopies(_currentCopiesTitleId);
+            }
+        }
+
+        private void PhysicalNextPage(object? sender, EventArgs e)
+        {
+            // Tăng trang và nạp lại bảng; nút đã tự khóa ở trang cuối.
+            _physicalCopiesPage++;
+            DisplayCopies(_currentCopiesTitleId);
+        }
+
+        private void ResetPhysicalPagination()
+        {
+            // Xóa trạng thái phân trang khi không còn đầu sách được chọn.
+            _currentCopiesTitleId = 0;
+            _physicalCopiesPage = 1;
+            lblPhysicalPage.Text = "0";
+            btnPhysicalPrevious.Enabled = false;
+            btnPhysicalNext.Enabled = false;
         }
 
         private static string GetCopyStatusText(int status)
