@@ -79,7 +79,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         ((System.ComponentModel.ISupportInitialize)dgvDanhSach).BeginInit();
         SuspendLayout();
 
-        //lblTieuDe
+        // Tiêu đề chính nằm góc trên bên trái màn hình
         lblTieuDe.AutoSize = true;
         lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
         lblTieuDe.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
@@ -88,7 +88,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblTieuDe.Size = new System.Drawing.Size(210, 28);
         lblTieuDe.Text = "MƯỢN - TRẢ SÁCH";
 
-        //grpLapPhieu
+        // Khung bên trên trái: chứa toàn bộ chức năng lập phiếu mượn sách
         grpLapPhieu.BackColor = System.Drawing.Color.White;
         grpLapPhieu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpLapPhieu.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
@@ -98,7 +98,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpLapPhieu.Size = new System.Drawing.Size(345, 315);
         grpLapPhieu.Text = "LẬP PHIẾU MƯỢN SÁCH";
 
-        //lblDocGia
+        // Nhãn chữ "Chọn độc giả"
         lblDocGia.AutoSize = true;
         lblDocGia.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblDocGia.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -107,7 +107,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblDocGia.Size = new System.Drawing.Size(125, 15);
         lblDocGia.Text = "Chọn độc giả";
 
-        //cboDocGia
+        // Ô sổ xuống chọn độc giả mượn sách, gắn sự kiện đổi người là cập nhật số sách đang giữ
         cboDocGia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         cboDocGia.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         cboDocGia.Location = new System.Drawing.Point(16, 50);
@@ -116,7 +116,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         cboDocGia.TabIndex = 0;
         cboDocGia.SelectedIndexChanged += cboDocGia_SelectedIndexChanged;
 
-        //lblMaVach
+        // Nhãn chữ "Quét mã vạch sách"
         lblMaVach.AutoSize = true;
         lblMaVach.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblMaVach.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -125,7 +125,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblMaVach.Size = new System.Drawing.Size(242, 15);
         lblMaVach.Text = "Quét mã vạch sách";
 
-        //txtMaVach
+        // Ô nhập hoặc quét mã vạch bản sao sách (CopyID) cần cho mượn
         txtMaVach.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         txtMaVach.Location = new System.Drawing.Point(16, 106);
         txtMaVach.Name = "txtMaVach";
@@ -133,7 +133,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaVach.Size = new System.Drawing.Size(308, 25);
         txtMaVach.TabIndex = 1;
 
-        //lblNgayMuon
+        // Nhãn chữ "Ngày mượn"
         lblNgayMuon.AutoSize = true;
         lblNgayMuon.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblNgayMuon.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -142,7 +142,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblNgayMuon.Size = new System.Drawing.Size(68, 15);
         lblNgayMuon.Text = "Ngày mượn";
 
-        //dtpNgayMuon
+        // Ô chọn ngày mượn sách theo định dạng ngắn
         dtpNgayMuon.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         dtpNgayMuon.Format = System.Windows.Forms.DateTimePickerFormat.Short;
         dtpNgayMuon.Location = new System.Drawing.Point(16, 162);
@@ -150,7 +150,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         dtpNgayMuon.Size = new System.Drawing.Size(146, 25);
         dtpNgayMuon.TabIndex = 2;
 
-        //lblNgayHanTra
+        // Nhãn chữ "Ngày Hạn Trả"
         lblNgayHanTra.AutoSize = true;
         lblNgayHanTra.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblNgayHanTra.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -159,7 +159,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblNgayHanTra.Size = new System.Drawing.Size(75, 15);
         lblNgayHanTra.Text = "Ngày Hạn Trả";
 
-        //dtpNgayHanTra
+        // Ô chọn ngày hẹn trả sách
         dtpNgayHanTra.Font = new System.Drawing.Font("Segoe UI", 9F);
         dtpNgayHanTra.Format = System.Windows.Forms.DateTimePickerFormat.Short;
         dtpNgayHanTra.Location = new System.Drawing.Point(178, 162);
@@ -167,7 +167,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         dtpNgayHanTra.Size = new System.Drawing.Size(146, 25);
         dtpNgayHanTra.TabIndex = 3;
 
-        //lblTieuDeTrangThai
+        // Nhãn chữ "Trạng thái mượn"
         lblTieuDeTrangThai.AutoSize = true;
         lblTieuDeTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblTieuDeTrangThai.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -176,7 +176,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblTieuDeTrangThai.Size = new System.Drawing.Size(93, 15);
         lblTieuDeTrangThai.Text = "Trạng thái mượn";
 
-        //lblTrangThaiMuon
+        // Thanh nền xanh hiện nhanh số cuốn đang mượn, nợ phạt và tình trạng thẻ của độc giả đang chọn
         lblTrangThaiMuon.AutoSize = false;
         lblTrangThaiMuon.BackColor = System.Drawing.Color.FromArgb(220, 252, 231);
         lblTrangThaiMuon.Font = new System.Drawing.Font("Segoe UI", 8.5F);
@@ -188,7 +188,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblTrangThaiMuon.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         lblTrangThaiMuon.Text = "Đang mượn: 0/3 cuốn | Nợ phạt: 0 đ | Thẻ: Hợp lệ";
 
-        //btnChoMuon
+        // Nút xác nhận cho mượn sách (màu xanh dương), gắn sự kiện bấm nút btnChoMuon_Click
         btnChoMuon.BackColor = System.Drawing.Color.FromArgb(37, 99, 235);
         btnChoMuon.FlatAppearance.BorderSize = 0;
         btnChoMuon.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -203,7 +203,8 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         btnChoMuon.Text = "Cho mượn sách";
         btnChoMuon.UseVisualStyleBackColor = false;
         btnChoMuon.Click += btnChoMuon_Click;
-
+        
+        // Thêm toàn bộ các control mượn sách vào bên trong khung grpLapPhieu
         grpLapPhieu.Controls.Add(lblDocGia);
         grpLapPhieu.Controls.Add(cboDocGia);
         grpLapPhieu.Controls.Add(lblMaVach);
@@ -216,7 +217,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpLapPhieu.Controls.Add(lblTrangThaiMuon);
         grpLapPhieu.Controls.Add(btnChoMuon);
 
-        //grpTraSach xếp dọc Mã phiếu và Mã vạch
+        // Khung bên dưới trái: chứa toàn bộ chức năng nhận trả sách và báo làm mất
         grpTraSach.BackColor = System.Drawing.Color.White;
         grpTraSach.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpTraSach.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
@@ -226,7 +227,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpTraSach.TabStop = false;
         grpTraSach.Text = "XỬ LÝ TRẢ SÁCH VÀ BÁO MẤT";
 
-        //lblMaPhieu
+        // Nhãn chữ "Mã phiếu"
         lblMaPhieu.AutoSize = true;
         lblMaPhieu.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblMaPhieu.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -235,7 +236,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblMaPhieu.Size = new System.Drawing.Size(113, 15);
         lblMaPhieu.Text = "Mã phiếu";
 
-        //txtMaPhieu
+        // Ô hiện mã phiếu vừa bấm chọn từ bảng (chỉ đọc để tránh người dùng tự sửa nhầm)
         txtMaPhieu.BackColor = System.Drawing.Color.FromArgb(248,250,252);
         txtMaPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         txtMaPhieu.Location = new System.Drawing.Point(16, 48);
@@ -244,7 +245,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaPhieu.TabIndex = 0;
         txtMaPhieu.ReadOnly = true;
 
-        //lblMaVachTra
+        // Nhãn chữ "Mã Vạch (CopyID)"
         lblMaVachTra.AutoSize = true;
         lblMaVachTra.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblMaVachTra.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -253,7 +254,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblMaVachTra.Size = new System.Drawing.Size(99, 15);
         lblMaVachTra.Text = "Mã Vạch (CopyID)";
 
-        //txtMaVachTra
+        // Ô hiện mã vạch cuốn sách của phiếu đang chọn (chỉ đọc)
         txtMaVachTra.BackColor = System.Drawing.Color.FromArgb(248, 250, 252);
         txtMaVachTra.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         txtMaVachTra.Location = new System.Drawing.Point(16, 104);
@@ -262,7 +263,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaVachTra.Size = new System.Drawing.Size(308, 25);
         txtMaVachTra.TabIndex = 1;
 
-        //lblNgayTra
+        // Nhãn chữ "Ngày trả"
         lblNgayTra.AutoSize = true;
         lblNgayTra.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblNgayTra.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -271,7 +272,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblNgayTra.Size = new System.Drawing.Size(51, 15);
         lblNgayTra.Text = "Ngày trả";
 
-        //dtpNgayTra
+        // Ô chọn ngày trả thực tế, đổi ngày sẽ tự gọi hàm CapNhatTienPhat để tính lại phạt trễ hạn
         dtpNgayTra.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         dtpNgayTra.Format = System.Windows.Forms.DateTimePickerFormat.Short;
         dtpNgayTra.Location = new System.Drawing.Point(16, 160);
@@ -280,7 +281,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         dtpNgayTra.TabIndex = 2;
         dtpNgayTra.ValueChanged += CapNhatTienPhat;
 
-        //lblXuLy
+        // Nhãn chữ "Xử lý"
         lblXuLy.AutoSize = true;
         lblXuLy.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblXuLy.ForeColor = System.Drawing.Color.FromArgb(51, 65, 85);
@@ -289,7 +290,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblXuLy.Size = new System.Drawing.Size(32, 15);
         lblXuLy.Text = "Xử lý";
 
-        //cboTinhTrangSach
+        // Ô chọn hình thức xử lý (Trả sách hoặc Làm mất sách), đổi mục sẽ tự gọi lại CapNhatTienPhat
         cboTinhTrangSach.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         cboTinhTrangSach.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         cboTinhTrangSach.Location = new System.Drawing.Point(178, 160);
@@ -298,7 +299,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         cboTinhTrangSach.TabIndex = 3;
         cboTinhTrangSach.SelectedIndexChanged += CapNhatTienPhat;
 
-        //lblTongTienPhat
+        // Dòng chữ màu đỏ hiện số tiền phạt dự kiến (trễ hạn hoặc đền mất sách)
         lblTongTienPhat.AutoSize = true;
         lblTongTienPhat.ForeColor = System.Drawing.Color.FromArgb(220, 38, 38);
         lblTongTienPhat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -307,7 +308,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblTongTienPhat.Size = new System.Drawing.Size(102, 15);
         lblTongTienPhat.Text = "Tiền phạt: 0đ";
 
-        //btnNhanTraSach
+        // Nút xác nhận nhận trả sách hoặc báo mất (màu xanh lá), gắn sự kiện btnNhanTraSach_Click
         btnNhanTraSach.BackColor = System.Drawing.Color.FromArgb(22, 163, 74);
         btnNhanTraSach.FlatAppearance.BorderSize = 0;
         btnNhanTraSach.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -323,7 +324,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         btnNhanTraSach.UseVisualStyleBackColor = false;
         btnNhanTraSach.Click += btnNhanTraSach_Click;
     
-        //grpTraSach
+        // Thêm toàn bộ các control trả sách vào bên trong khung grpTraSach
         grpTraSach.Controls.Add(lblMaPhieu);
         grpTraSach.Controls.Add(txtMaPhieu);
         grpTraSach.Controls.Add(lblMaVachTra);
@@ -335,7 +336,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpTraSach.Controls.Add(lblTongTienPhat);
         grpTraSach.Controls.Add(btnNhanTraSach);
     
-        //grpDanhSach
+        // Khung lớn bên phải: chứa thanh tìm kiếm, bộ lọc và bảng danh sách phiếu mượn trả (neo 4 cạnh để tự giãn khi phóng to)
         grpDanhSach.BackColor = System.Drawing.Color.White;
         grpDanhSach.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpDanhSach.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
@@ -350,7 +351,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
                              System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
         grpDanhSach.Text = "DANH SÁCH PHIẾU MƯỢN, TRẢ";
 
-        //lblThongKeNho
+        // Dòng thống kê nhanh góc trên phải hiện tổng phiếu đang mượn và quá hạn
         lblThongKeNho.AutoSize = false;
         lblThongKeNho.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblThongKeNho.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
@@ -361,7 +362,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblThongKeNho.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
         lblThongKeNho.Text = "0 phiếu đang mượn, 0 quá hạn";
 
-        //txtTimKiem
+        // Ô nhập từ khóa tìm kiếm (tự giãn ngang theo chiều rộng khung)
         txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         txtTimKiem.Location = new System.Drawing.Point(16, 42);
         txtTimKiem.Name = "txtTimKiem";
@@ -370,7 +371,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtTimKiem.Size = new System.Drawing.Size(270, 25);
         txtTimKiem.TabIndex = 0;
 
-        //cboLocTrangThai
+        // Ô sổ xuống lọc danh sách theo trạng thái (Tất cả, Đang mượn, Đã trả, Làm mất)
         cboLocTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         cboLocTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         cboLocTrangThai.Location = new System.Drawing.Point(296, 42);
@@ -379,7 +380,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         cboLocTrangThai.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
         cboLocTrangThai.TabIndex = 1;
 
-        //btnTimkiem
+        // Nút bấm thực hiện lọc danh sách theo từ khóa và trạng thái
         btnTimKiem.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
         btnTimKiem.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
         btnTimKiem.FlatAppearance.BorderSize = 0;
@@ -395,7 +396,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         btnTimKiem.UseVisualStyleBackColor = false;
         btnTimKiem.Click += btnTimKiem_Click;
 
-        //lblGhiChuNgayTra
+        // Dòng ghi chú nhỏ giải thích cột Ngày trả nằm ngay phía trên bảng
         lblGhiChuNgayTra.AutoSize = true;
         lblGhiChuNgayTra.Font = new System.Drawing.Font("Segoe UI", 8.5F);
         lblGhiChuNgayTra.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
@@ -404,7 +405,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblGhiChuNgayTra.Size = new System.Drawing.Size(173, 15);
         lblGhiChuNgayTra.Text = "Ngày trả sẽ được ghi nhận khi nhận sách";
 
-        //dgvDanhSach
+        // Bảng DataGridView hiển thị danh sách phiếu mượn trả: chỉ đọc, chọn nguyên dòng, cột tự giãn đầy khung và gắn sự kiện click, tô màu
         dgvDanhSach.AllowUserToAddRows = false;
         dgvDanhSach.AllowUserToDeleteRows = false;
         dgvDanhSach.RowTemplate.Height = 34;
@@ -449,7 +450,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         dgvDanhSach.CellClick += dgvDanhSach_CellClick;
         dgvDanhSach.CellFormatting += dgvDanhSach_CellFormatting;
 
-        //lblChanTrang
+        // Dòng chân trang góc dưới trái hiện tổng số phiếu đang hiển thị và mã phiếu vừa chọn
         lblChanTrang.AutoSize = true;
         lblChanTrang.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblChanTrang.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
@@ -458,7 +459,8 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblChanTrang.Size = new System.Drawing.Size(215, 15);
         lblChanTrang.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         lblChanTrang.Text = "Hiển thị 0 phiếu | đã chọn: chưa chọn";
-
+        
+        // Thêm toàn bộ thanh tìm kiếm, bảng và chân trang vào bên trong khung grpDanhSach
         grpDanhSach.Controls.Add(lblThongKeNho);
         grpDanhSach.Controls.Add(txtTimKiem);
         grpDanhSach.Controls.Add(cboLocTrangThai);
@@ -467,7 +469,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpDanhSach.Controls.Add(dgvDanhSach);
         grpDanhSach.Controls.Add(lblChanTrang);
 
-        //ucBorrow chuẩn kích thước 1000x700
+        // Cấu hình màn hình chính ucBorrow kích thước chuẩn 1000x700, gắn sự kiện ucBorrow_Load và vẽ lại toàn bộ layout
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         
         //Tắt tự động phóng to windows để giữ đúng form 1000x700
