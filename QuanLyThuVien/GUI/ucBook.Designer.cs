@@ -16,6 +16,7 @@ namespace QuanLyThuVien.UI.UserControls
         private Label lblCategoryCount = null!;
         private Button btnThemTheLoai = null!;
         private Button btnSuaTheLoai = null!;
+        private Button btnXoaTheLoai = null!;
         private Button btnThemDauSach = null!;
         private Button btnSuaDauSach = null!;
         private Button btnXoaDauSach = null!;
@@ -195,14 +196,17 @@ namespace QuanLyThuVien.UI.UserControls
             btnSuaTheLoai.Height = 48;
             btnSuaTheLoai.Click += UpdateBookCategory;
 
-            var btnXoa = CreateButton(
+            btnXoaTheLoai = CreateButton(
                 "Xóa thể loại",
                 Color.White,
                 Color.FromArgb(220, 38, 38),
                 200
             );
+            // Gắn sự kiện xóa thể loại với nút Xóa trên giao diện.
+            btnXoaTheLoai.Name = "btnXoaTheLoai";
+            btnXoaTheLoai.Click += DeleteBookCategory;
             
-            foreach (Button btn in new[] { btnThemTheLoai, btnSuaTheLoai, btnXoa })
+            foreach (Button btn in new[] { btnThemTheLoai, btnSuaTheLoai, btnXoaTheLoai })
             {
                 btn.Height = 48;
                 btn.Margin = new Padding(2);
@@ -211,7 +215,7 @@ namespace QuanLyThuVien.UI.UserControls
             
             buttons.Controls.Add(btnThemTheLoai);
             buttons.Controls.Add(btnSuaTheLoai);
-            buttons.Controls.Add(btnXoa);
+            buttons.Controls.Add(btnXoaTheLoai);
 
             layout.Controls.Add(buttons, 0, 3);
 
