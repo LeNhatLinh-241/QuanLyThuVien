@@ -2,7 +2,7 @@ namespace QuanLyThuVien;
 
 public partial class FormMain : Form
 {
-    public FormMain()  
+    public FormMain()
     {
         InitializeComponent();
     }
