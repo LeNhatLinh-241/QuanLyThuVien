@@ -17,6 +17,15 @@
       <Compile Update="GUI\FormMain.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Update="GUI\LoginForm.cs">
+        <SubType>Form</SubType>
+      </Compile>
+      <Compile Update="GUI\ucUser.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="GUI\ucReport.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
     </ItemGroup>
 
 </Project>
