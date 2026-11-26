@@ -86,6 +86,16 @@ public class DatabaseConnect
                             FOREIGN KEY (CopyID) REFERENCES BookCopies(CopyID)
                         );";
                     command.ExecuteNonQuery();
+                    // tk test
+                    command.CommandText = @"
+                    INSERT INTO Users (Username, Password, Role, HoTen, SoDienThoai, IsActive)
+                    SELECT 'admin', '123', 'Admin', 'Quản trị viên', '0900000001', 1
+                    WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'admin');
+
+                    INSERT INTO Users (Username, Password, Role, HoTen, SoDienThoai, IsActive)
+                    SELECT 'thuthu', '123', 'ThuThu', 'Thủ thư', '0900000002', 1
+                    WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'thuthu');";
+                    command.ExecuteNonQuery();
                 }
             }
         }
