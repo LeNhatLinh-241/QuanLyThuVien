@@ -80,22 +80,25 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         SuspendLayout();
 
         // Tiêu đề chính nằm góc trên bên trái màn hình
-        lblTieuDe.AutoSize = true;
-        lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
-        lblTieuDe.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        lblTieuDe.Location = new System.Drawing.Point(20, 15);
-        lblTieuDe.Name = "lblTieuDe";
-        lblTieuDe.Size = new System.Drawing.Size(210, 28);
-        lblTieuDe.Text = "MƯỢN - TRẢ SÁCH";
+       // lblTieuDe.AutoSize = true;
+       // lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
+       // lblTieuDe.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
+       // lblTieuDe.Location = new System.Drawing.Point(20, 15);
+       // lblTieuDe.Name = "lblTieuDe";
+       // lblTieuDe.Size = new System.Drawing.Size(210, 28);
+       // lblTieuDe.Text = "MƯỢN - TRẢ SÁCH";
 
         // Khung bên trên trái: chứa toàn bộ chức năng lập phiếu mượn sách
         grpLapPhieu.BackColor = System.Drawing.Color.White;
-        grpLapPhieu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+        grpLapPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
         grpLapPhieu.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        grpLapPhieu.Location = new System.Drawing.Point(20, 55);
+        grpLapPhieu.Location = new System.Drawing.Point(16, 12);
         grpLapPhieu.TabIndex = 0;
         grpLapPhieu.TabStop = false;
-        grpLapPhieu.Size = new System.Drawing.Size(345, 315);
+        grpLapPhieu.Size = new System.Drawing.Size(376, 322);
+        grpLapPhieu.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Left;
         grpLapPhieu.Text = "LẬP PHIẾU MƯỢN SÁCH";
 
         // Nhãn chữ "Chọn độc giả"
@@ -112,7 +115,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         cboDocGia.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         cboDocGia.Location = new System.Drawing.Point(16, 50);
         cboDocGia.Name = "cboDocGia";
-        cboDocGia.Size = new System.Drawing.Size(308, 25);
+        cboDocGia.Size = new System.Drawing.Size(344, 25);
         cboDocGia.TabIndex = 0;
         cboDocGia.SelectedIndexChanged += cboDocGia_SelectedIndexChanged;
 
@@ -130,7 +133,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaVach.Location = new System.Drawing.Point(16, 106);
         txtMaVach.Name = "txtMaVach";
         txtMaVach.PlaceholderText = "SACH01_1";
-        txtMaVach.Size = new System.Drawing.Size(308, 25);
+        txtMaVach.Size = new System.Drawing.Size(344, 25);
         txtMaVach.TabIndex = 1;
 
         // Nhãn chữ "Ngày mượn"
@@ -198,7 +201,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         btnChoMuon.ForeColor = System.Drawing.Color.White;
         btnChoMuon.Location = new System.Drawing.Point(16, 256);
         btnChoMuon.Name = "btnChoMuon";
-        btnChoMuon.Size = new System.Drawing.Size(308,38);
+        btnChoMuon.Size = new System.Drawing.Size(344, 38);
         btnChoMuon.TabIndex = 4;
         btnChoMuon.Text = "Cho mượn sách";
         btnChoMuon.UseVisualStyleBackColor = false;
@@ -221,8 +224,11 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpTraSach.BackColor = System.Drawing.Color.White;
         grpTraSach.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpTraSach.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        grpTraSach.Location = new System.Drawing.Point(20, 382);
-        grpTraSach.Size = new System.Drawing.Size(345, 300);
+        grpTraSach.Location = new System.Drawing.Point(16, 340);
+        grpTraSach.Size = new System.Drawing.Size(376, 300);
+        grpTraSach.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Left;
         grpTraSach.TabIndex = 1;
         grpTraSach.TabStop = false;
         grpTraSach.Text = "XỬ LÝ TRẢ SÁCH VÀ BÁO MẤT";
@@ -241,7 +247,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F);
         txtMaPhieu.Location = new System.Drawing.Point(16, 48);
         txtMaPhieu.Name = "txtMaPhieu";
-        txtMaPhieu.Size = new System.Drawing.Size(308, 25);
+        txtMaPhieu.Size = new System.Drawing.Size(344, 25);
         txtMaPhieu.TabIndex = 0;
         txtMaPhieu.ReadOnly = true;
 
@@ -260,7 +266,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtMaVachTra.Location = new System.Drawing.Point(16, 104);
         txtMaVachTra.Name = "txtMaVachTra";
         txtMaVachTra.ReadOnly = true;
-        txtMaVachTra.Size = new System.Drawing.Size(308, 25);
+        txtMaVachTra.Size = new System.Drawing.Size(344, 25);
         txtMaVachTra.TabIndex = 1;
 
         // Nhãn chữ "Ngày trả"
@@ -316,7 +322,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         btnNhanTraSach.ForeColor = System.Drawing.Color.White;
         btnNhanTraSach.Location = new System.Drawing.Point(16, 222);
         btnNhanTraSach.Name = "btnNhanTraSach";
-        btnNhanTraSach.Size = new System.Drawing.Size(308, 38);
+        btnNhanTraSach.Size = new System.Drawing.Size(344, 38);
         btnNhanTraSach.TabIndex = 4;
         btnNhanTraSach.Text = "NHẬN TRẢ SÁCH";
         btnNhanTraSach.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -340,9 +346,15 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpDanhSach.BackColor = System.Drawing.Color.White;
         grpDanhSach.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpDanhSach.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        grpDanhSach.Location = new System.Drawing.Point(380, 55);
+        grpDanhSach.Location = new System.Drawing.Point(408, 12);
         grpDanhSach.Name = "grpDanhSach";
-        grpDanhSach.Size = new System.Drawing.Size(600, 628);
+        grpDanhSach.Size = new System.Drawing.Size(576, 628);
+        grpDanhSach.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Left |
+            System.Windows.Forms.AnchorStyles.Right;
+        Size = new System.Drawing.Size(1000, 664);
         grpDanhSach.TabIndex = 2;
         grpDanhSach.TabStop = false;
         
@@ -355,7 +367,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         lblThongKeNho.AutoSize = false;
         lblThongKeNho.Font = new System.Drawing.Font("Segoe UI", 9F);
         lblThongKeNho.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
-        lblThongKeNho.Location = new System.Drawing.Point(360, 18);
+        lblThongKeNho.Location = new System.Drawing.Point(340, 18);
         lblThongKeNho.Name = "lblThongKeNho";
         lblThongKeNho.Size = new System.Drawing.Size(220, 20);
         lblThongKeNho.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -367,30 +379,36 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         txtTimKiem.Location = new System.Drawing.Point(16, 42);
         txtTimKiem.Name = "txtTimKiem";
         txtTimKiem.PlaceholderText = "Tìm mã phiếu, độc giả, tên sách";
-        txtTimKiem.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        txtTimKiem.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Left;
         txtTimKiem.Size = new System.Drawing.Size(270, 25);
         txtTimKiem.TabIndex = 0;
 
         // Ô sổ xuống lọc danh sách theo trạng thái (Tất cả, Đang mượn, Đã trả, Làm mất)
         cboLocTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         cboLocTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-        cboLocTrangThai.Location = new System.Drawing.Point(296, 42);
+        cboLocTrangThai.Location = new System.Drawing.Point(282, 42);
         cboLocTrangThai.Name = "cboLocTrangThai";
         cboLocTrangThai.Size = new System.Drawing.Size(175, 25);
-        cboLocTrangThai.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+        cboLocTrangThai.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Left;
         cboLocTrangThai.TabIndex = 1;
 
         // Nút bấm thực hiện lọc danh sách theo từ khóa và trạng thái
         btnTimKiem.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
-        btnTimKiem.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+        btnTimKiem.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Left;
         btnTimKiem.FlatAppearance.BorderSize = 0;
         btnTimKiem.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(203, 213, 225);
         btnTimKiem.Cursor = System.Windows.Forms.Cursors.Hand;
         btnTimKiem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         btnTimKiem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
         btnTimKiem.ForeColor = System.Drawing.Color.White;
-        btnTimKiem.Location = new System.Drawing.Point(481, 40);
-        btnTimKiem.Size = new System.Drawing.Size(108, 29);
+        btnTimKiem.Location = new System.Drawing.Point(463, 40);
+        btnTimKiem.Size = new System.Drawing.Size(105, 32);
         btnTimKiem.TabIndex = 2;
         btnTimKiem.Text = "Tìm kiếm";
         btnTimKiem.UseVisualStyleBackColor = false;
@@ -474,13 +492,13 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         
         //Tắt tự động phóng to windows để giữ đúng form 1000x700
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-        BackColor = System.Drawing.Color.FromArgb(245, 246, 250);
-        Controls.Add(lblTieuDe);
+        BackColor = System.Drawing.Color.FromArgb(241, 245, 249);
+       // Controls.Add(lblTieuDe);
         Controls.Add(grpLapPhieu);
         Controls.Add(grpTraSach);
         Controls.Add(grpDanhSach);
         Name = "ucBorrow";
-        Size = new System.Drawing.Size(1000, 700);
+        Size = new System.Drawing.Size(1000, 664);
         Load += ucBorrow_Load;
         grpLapPhieu.ResumeLayout(false);
         grpLapPhieu.PerformLayout();
