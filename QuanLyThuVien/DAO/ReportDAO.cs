@@ -33,9 +33,9 @@ public class ReportDAO
         {
             cmd.CommandText = @"
                 SELECT 
-                    (SELECT COUNT(*) FROM BookCopies) AS TongBanSach,
+                    (SELECT COUNT(*) FROM BookCopies bc INNER JOIN BookTitles bt ON bc.TitleID = bt.TitleID WHERE bt.IsDeleted = 0) AS TongBanSach,
                     (SELECT COUNT(*) FROM BookTitles WHERE IsDeleted = 0) AS TongDauSach,
-                    (SELECT COUNT(*) FROM BookCopies WHERE TrangThai = 0) AS BanSachSanCo;";
+                    (SELECT COUNT(*) FROM BookCopies bc INNER JOIN BookTitles bt ON bc.TitleID = bt.TitleID WHERE bt.IsDeleted = 0 AND bc.TrangThai = 0) AS BanSachSanCo;";
             using var rd = cmd.ExecuteReader();
             if (rd.Read())
             {

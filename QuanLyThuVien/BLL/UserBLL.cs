@@ -88,6 +88,9 @@ public class UserBLL
 
         if (string.IsNullOrWhiteSpace(user.HoTen))
             return "Họ và tên không được để trống!";
+        if ((user.Role == "Admin" || user.Role == "ThuThu") &&
+            (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password)))
+            return "Tài khoản Admin / Thủ thư bắt buộc phải có Username và Mật khẩu!";
 
         return userDao.UpdateFullUser(user) ? "Cập nhật thông tin thành công!" : "Lỗi khi cập nhật thông tin.";
     }

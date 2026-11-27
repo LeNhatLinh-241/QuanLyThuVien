@@ -1,5 +1,4 @@
 using Dapper;
-using Microsoft.VisualBasic.ApplicationServices;
 using QuanLyThuVien.DTO;
 namespace QuanLyThuVien.DAO;
 
@@ -301,10 +300,10 @@ public class BorrowRecordDAO
     {
         using (var conn = db.GetConnection())
         {
-            string sql = "SELECT ID, HoTen FROM Users WHERE Role = 0 AND IsActive = 1 ORDER BY ID";
+            string sql = "SELECT ID, HoTen FROM Users WHERE Role = 'DocGia' AND IsActive = 1 ORDER BY ID";
             return conn.Query<UserDTO>(sql).ToList();
         }
-    }
+    }   
 
     //lấy mã vạch đang sẵn sàng để làm gợi ý
     public List<string> LayDanhSachMaVachSanSang()
