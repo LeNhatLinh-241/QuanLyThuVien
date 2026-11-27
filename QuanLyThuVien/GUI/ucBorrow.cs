@@ -83,6 +83,7 @@ public partial class ucBorrow : UserControl
         //LoadDanhSachPhieuMuon();
         ReloadData();
         daTaiLanDau = true;
+        cboLocTrangThai.SelectedIndexChanged += btnTimKiem_Click;
     }
     
     //Tự chạy khi người dùng chuyển từ tab khác như kho sách, độc giả và quay lại tab này
@@ -272,19 +273,7 @@ public partial class ucBorrow : UserControl
             // Gọi lại hàm định dạng để đổi tên cột sang tiếng Việt và chia tỷ lệ độ rộng
             DinhDangCotBang();
             
-            // Đổi tên tiêu đề cột sang tiếng Việt giống thiết kế Figma
-            if (dgvDanhSach.Columns.Count > 0)
-            {
-                if (dgvDanhSach.Columns["RecordID"] != null) dgvDanhSach.Columns["RecordID"].HeaderText = "Mã Phiếu";
-                if (dgvDanhSach.Columns["UserID"] != null) dgvDanhSach.Columns["UserID"].HeaderText = "Độc Giả";
-                if (dgvDanhSach.Columns["CopyID"] != null) dgvDanhSach.Columns["CopyID"].HeaderText = "Sách Mượn";
-                if (dgvDanhSach.Columns["NgayMuon"] != null) dgvDanhSach.Columns["NgayMuon"].HeaderText = "Ngày Mượn";
-                if (dgvDanhSach.Columns["NgayHanTra"] != null) dgvDanhSach.Columns["NgayHanTra"].HeaderText = "Hạn Trả";
-                if (dgvDanhSach.Columns["NgayTraThucTe"] != null) dgvDanhSach.Columns["NgayTraThucTe"].HeaderText = "Ngày Trả";
-                if (dgvDanhSach.Columns["TienPhat"] != null) dgvDanhSach.Columns["TienPhat"].HeaderText = "Tiền Phạt";
-                if (dgvDanhSach.Columns["TrangThai"] != null) dgvDanhSach.Columns["TrangThai"].HeaderText = "Trạng Thái";
-                if (dgvDanhSach.Columns["TrangThaiThuTien"] != null) dgvDanhSach.Columns["TrangThaiThuTien"].Visible = false;
-            }
+           
             // Khai báo 2 biến đếm để hiện thống kê nhanh ở góc trên bên phải
             int dangMuon = 0;
             int quaHan = 0;
@@ -311,7 +300,7 @@ public partial class ucBorrow : UserControl
             
             // Cập nhật tổng số phiếu và mã phiếu đang chọn
             // Nếu chưa chọn phiếu nào (txtMaPhieu trống) thì hiện chưa chọn
-            lblChanTrang.Text = "Hiển thị " + list.Count + "phiếu | đã chọn: " +
+            lblChanTrang.Text = "Hiển thị " + list.Count + " phiếu | đã chọn: " +
                                 (string.IsNullOrEmpty(txtMaPhieu.Text) ? "Chưa chọn " : "PM" + txtMaPhieu.Text.PadLeft(3, '0'));
         }
         catch (Exception ex)
@@ -419,11 +408,11 @@ public partial class ucBorrow : UserControl
             // Xóa mã vạch cũ để thủ thư sẵn sàng quét cuốn tiếp theo
             txtMaVach.Clear();
            
-            // Tải lại bảng danh sách để hiện phiếu mượn mới và cập nhật số lượng thống kê
-            LoadDanhSachPhieuMuon();
-            
             // Nạp lại map tra cứu tên trước khi tải lại bảng để dữ liệu hiển thị luôn đồng bộ
             LoadMapTraCuu();
+            
+            // Tải lại bảng danh sách để hiện phiếu mượn mới và cập nhật số lượng thống kê
+            LoadDanhSachPhieuMuon();
             
             // Tải lại gợi ý mã vạch để loại bỏ cuốn sách vừa cho mượn
             LoadGoiYMaVach();
@@ -531,7 +520,7 @@ public partial class ucBorrow : UserControl
         
         // Đổi chuỗi ngày mượn tạm sang kiểu DateTime rồi so sánh theo .Date (bỏ qua giờ phút giây)
         // Giúp cho phép mượn và trả ngay trong cùng một ngày mà không bị báo lỗi
-        if (DateTime.TryParse(ngayMuonTam, out DateTime ngayMuon) && dtpNgayTra.Value < ngayMuon.Date)
+        if (DateTime.TryParse(ngayMuonTam, out DateTime ngayMuon) && dtpNgayTra.Value.Date < ngayMuon.Date)
         {
             MessageBox.Show("Ngày trả không được nhỏ hơn ngày mượn", "Thông báo", MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -708,7 +697,6 @@ public partial class ucBorrow : UserControl
              
             bool trungTuKhoa = string.IsNullOrEmpty(tuKhoa) || item.RecordID.ToString().Contains(tuKhoa) ||
                                item.UserID.ToString().Contains(tuKhoa) || maPhieuDayDu.Contains(tuKhoa) ||
-                               item.UserID.ToString().Contains(tuKhoa) ||
                                tenDocGia.Contains(tuKhoa) ||
                                tenSach.Contains(tuKhoa) ||
                                (item.CopyID != null && item.CopyID.ToLower().Contains(tuKhoa));

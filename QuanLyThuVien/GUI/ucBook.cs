@@ -27,6 +27,7 @@ namespace QuanLyThuVien.UI.UserControls
         // Hàm khởi tạo UserControl, được gọi khi màn hình được tạo
         public ucBook()
         {
+            
             // Tạo các điều khiển giao diện trong ucBook.Designer.cs
             InitializeComponent();
             // Khi người dùng chọn dòng đầu sách, tự động tải cuốn vật lý tương ứng
@@ -48,6 +49,20 @@ namespace QuanLyThuVien.UI.UserControls
                     "Lỗi cơ sở dữ liệu",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+            }
+        }
+        public void ReloadData()
+        {
+            try
+            {
+                int? currentId = _currentCopiesTitleId > 0 ? _currentCopiesTitleId : null;
+                LoadCategories();
+                LoadBookTitles(currentId);
+            }
+            catch (SqliteException ex)
+            {
+                MessageBox.Show(this, $"Không thể tải lại dữ liệu sách: {ex.Message}",
+                    "Hệ thống quản lý thư viện", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -488,7 +503,7 @@ namespace QuanLyThuVien.UI.UserControls
                     txtTacGia.Clear();
                     txtGiaTien.Clear();
                     cboTheLoai.SelectedIndex = -1;
-                    // Cập nhật phần trạng thái bảng cuốn vật lý
+                    // Cập nhật phần trạng thái bảng cuốn vật lý    
                     lblPhysicalCopiesHeader.Text = "Chưa có đầu sách";
                     lblPhysicalCopiesSummary.Text = "Không có cuốn sách vật lý";
                     ResetPhysicalPagination();
@@ -911,6 +926,12 @@ namespace QuanLyThuVien.UI.UserControls
                 var result = _bookTitleBLL.AddWithCopies(bookTitle, quantity);
                 // Nạp lại bảng và chọn đầu sách vừa được tạo
                 LoadBookTitles(result.TitleId);
+                MessageBox.Show(
+                    this,
+                    $"Đã thêm đầu sách và sinh {result.Copies.Count} mã vạch thành công!",
+                    "Hệ thống quản lý thư viện",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             catch (ArgumentException ex)
             {

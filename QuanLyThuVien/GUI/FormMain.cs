@@ -31,10 +31,18 @@ public partial class FormMain : Form
     private void GanSuKienMenu()
     {
         btnDocGia.Click += (s, e) =>
-            HienThiTrang(LayHoacTaoUcUser(), "QUẢN LÝ ĐỘC GIẢ", btnDocGia);
+        {
+            var uc = LayHoacTaoUcUser();
+            HienThiTrang(uc, "QUẢN LÝ ĐỘC GIẢ", btnDocGia);
+            uc.TaiDanhSach();
+        };
 
         btnKhoSach.Click += (s, e) =>
-            HienThiTrang(LayHoacTaoUcBook(), "QUẢN LÝ KHO SÁCH", btnKhoSach);
+        {
+            var uc = LayHoacTaoUcBook();
+            HienThiTrang(uc, "QUẢN LÝ KHO SÁCH", btnKhoSach);
+            uc.ReloadData();
+        };
 
         btnMuonTra.Click += (s, e) =>
         {
