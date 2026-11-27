@@ -110,7 +110,7 @@ partial class FormMain
         this.btnDocGia.Padding = new System.Windows.Forms.Padding(12, 0, 8, 0);
         this.btnDocGia.Size = new System.Drawing.Size(222, 46);
         this.btnDocGia.TabIndex = 1;
-        this.btnDocGia.Text = " Quản lý Độc giả (ucUser)";
+        this.btnDocGia.Text = " Quản lý Độc giả";
         this.btnDocGia.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         this.btnDocGia.UseVisualStyleBackColor = false;
         // 
@@ -128,7 +128,7 @@ partial class FormMain
         this.btnKhoSach.Padding = new System.Windows.Forms.Padding(12, 0, 8, 0);
         this.btnKhoSach.Size = new System.Drawing.Size(222, 46);
         this.btnKhoSach.TabIndex = 2;
-        this.btnKhoSach.Text = " Quản lý Kho sách (ucBook)";
+        this.btnKhoSach.Text = " Quản lý Kho sách";
         this.btnKhoSach.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         this.btnKhoSach.UseVisualStyleBackColor = false;
         // 
@@ -146,7 +146,7 @@ partial class FormMain
         this.btnMuonTra.Padding = new System.Windows.Forms.Padding(12, 0, 8, 0);
         this.btnMuonTra.Size = new System.Drawing.Size(222, 46);
         this.btnMuonTra.TabIndex = 3;
-        this.btnMuonTra.Text = " Mượn - Trả sách (ucBorrow)";
+        this.btnMuonTra.Text = " Mượn - Trả sách";
         this.btnMuonTra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         this.btnMuonTra.UseVisualStyleBackColor = false;
         // 
@@ -164,7 +164,7 @@ partial class FormMain
         this.btnBaoCao.Padding = new System.Windows.Forms.Padding(12, 0, 8, 0);
         this.btnBaoCao.Size = new System.Drawing.Size(222, 54);
         this.btnBaoCao.TabIndex = 4;
-        this.btnBaoCao.Text = " Báo cáo - Thống kê\r\n(ucReport)";
+        this.btnBaoCao.Text = " Báo cáo - Thống kê";
         this.btnBaoCao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         this.btnBaoCao.UseVisualStyleBackColor = false;
         // 
