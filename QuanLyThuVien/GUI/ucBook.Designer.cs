@@ -42,12 +42,10 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(241, 245, 249),
                 ColumnCount = 1,
-                RowCount = 3,
+                RowCount = 1,
                 Padding = new Padding(12, 10, 12, 8)
             };
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
             page.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 55));
 
             var header = new Panel
             {
@@ -80,7 +78,7 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
-                Padding = new Padding(12, 10, 12, 10),
+                Padding = new Padding(12, 8, 12, 8),
                 BackColor = Color.Transparent
             };
             content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 325));
@@ -117,7 +115,7 @@ namespace QuanLyThuVien.UI.UserControls
             });
 
             
-            page.Controls.Add(content, 0, 1);
+            page.Controls.Add(content, 0, 0);
             
             Controls.Add(page);
 
@@ -146,7 +144,7 @@ namespace QuanLyThuVien.UI.UserControls
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 46));
 
-            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH (CÂY PHÂN CẤP)"), 0, 0);
+            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH "), 0, 0);
             lblCategoryCount = new Label
             {
                 Text = "0 nhóm",
@@ -296,7 +294,7 @@ namespace QuanLyThuVien.UI.UserControls
             titleLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             var titleHeader = new Panel { Dock = DockStyle.Fill };
-            titleHeader.Controls.Add(CreateSectionTitle("ĐẦU SÁCH - BookTitles"));
+            titleHeader.Controls.Add(CreateSectionTitle("ĐẦU SÁCH "));
             titleLayout.Controls.Add(titleHeader, 0, 0);
             titleLayout.Controls.Add(CreateBookFields(), 0, 1);
             // titleHeader.Controls.Add(new Label
@@ -390,7 +388,7 @@ namespace QuanLyThuVien.UI.UserControls
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
 
             var header = new Panel { Dock = DockStyle.Fill };
-            header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ - BookCopies"));
+            header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ "));
             lblPhysicalCopiesHeader = new Label
             {
                 Text = "Mã vạch sinh tự động cho SACH01",

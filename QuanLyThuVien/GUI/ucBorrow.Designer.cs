@@ -92,13 +92,14 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpLapPhieu.BackColor = System.Drawing.Color.White;
         grpLapPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
         grpLapPhieu.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        grpLapPhieu.Location = new System.Drawing.Point(16, 12);
+        grpLapPhieu.Location = new System.Drawing.Point(16, 40);
         grpLapPhieu.TabIndex = 0;
         grpLapPhieu.TabStop = false;
-        grpLapPhieu.Size = new System.Drawing.Size(376, 322);
+        grpLapPhieu.Size = new System.Drawing.Size(376, 300);
         grpLapPhieu.Anchor =
-            System.Windows.Forms.AnchorStyles.Top |
-            System.Windows.Forms.AnchorStyles.Left;
+            AnchorStyles.Top |
+            AnchorStyles.Left |
+            AnchorStyles.Right;
         grpLapPhieu.Text = "LẬP PHIẾU MƯỢN SÁCH";
 
         // Nhãn chữ "Chọn độc giả"
@@ -224,11 +225,13 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpTraSach.BackColor = System.Drawing.Color.White;
         grpTraSach.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         grpTraSach.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-        grpTraSach.Location = new System.Drawing.Point(16, 340);
-        grpTraSach.Size = new System.Drawing.Size(376, 300);
+        grpTraSach.Location = new System.Drawing.Point(16, 452);
+        grpTraSach.Size = new System.Drawing.Size(376, 400);
         grpTraSach.Anchor =
-            System.Windows.Forms.AnchorStyles.Top |
-            System.Windows.Forms.AnchorStyles.Left;
+            AnchorStyles.Top |
+            AnchorStyles.Bottom |
+            AnchorStyles.Left |
+            AnchorStyles.Right;
         grpTraSach.TabIndex = 1;
         grpTraSach.TabStop = false;
         grpTraSach.Text = "XỬ LÝ TRẢ SÁCH VÀ BÁO MẤT";
@@ -350,10 +353,10 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpDanhSach.Name = "grpDanhSach";
         grpDanhSach.Size = new System.Drawing.Size(576, 628);
         grpDanhSach.Anchor =
-            System.Windows.Forms.AnchorStyles.Top |
-            System.Windows.Forms.AnchorStyles.Bottom |
-            System.Windows.Forms.AnchorStyles.Left |
-            System.Windows.Forms.AnchorStyles.Right;
+            AnchorStyles.Top |
+            AnchorStyles.Bottom |
+            AnchorStyles.Left |
+            AnchorStyles.Right;
         Size = new System.Drawing.Size(1000, 664);
         grpDanhSach.TabIndex = 2;
         grpDanhSach.TabStop = false;
@@ -440,7 +443,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         dgvDanhSach.ReadOnly = true;
         dgvDanhSach.RowHeadersVisible = false;
         dgvDanhSach.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-        dgvDanhSach.Size = new System.Drawing.Size(573, 485);
+        dgvDanhSach.Size = new System.Drawing.Size(544, 485);
         dgvDanhSach.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
                              System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
         dgvDanhSach.ColumnHeadersHeight = 40;
@@ -498,7 +501,7 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         Controls.Add(grpTraSach);
         Controls.Add(grpDanhSach);
         Name = "ucBorrow";
-        Size = new System.Drawing.Size(1000, 664);
+        Dock = DockStyle.Fill;
         Load += ucBorrow_Load;
         grpLapPhieu.ResumeLayout(false);
         grpLapPhieu.PerformLayout();
@@ -507,6 +510,39 @@ partial class ucBorrow : System.Windows.Forms.UserControl
         grpDanhSach.ResumeLayout(false);
         grpDanhSach.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)dgvDanhSach).EndInit();
+        // Tự động chia 2 khung trên và dưới theo tỷ lệ 50/50
+        void ChiaKhungMuonTra()
+        {
+            int leTren = 40;
+            int leDuoi = 12;
+            int khoangCach = 12;
+
+            int chieuCaoKhaDung =
+                ClientSize.Height - leTren - leDuoi - khoangCach;
+
+            int chieuCaoMoiKhung = chieuCaoKhaDung / 2;
+
+            // Khung lập phiếu mượn
+            grpLapPhieu.Location = new Point(16, leTren);
+            grpLapPhieu.Size = new Size(376, chieuCaoMoiKhung);
+
+            // Khung xử lý trả sách
+            grpTraSach.Location = new Point(
+                16,
+                leTren + chieuCaoMoiKhung + khoangCach
+            );
+
+            grpTraSach.Size = new Size(
+                376,
+                ClientSize.Height - grpTraSach.Top - leDuoi
+            );
+        }
+
+        // Chia ngay khi khởi tạo
+        ChiaKhungMuonTra();
+
+        // Tự chia lại khi thay đổi kích thước màn hình
+        SizeChanged += (s, e) => ChiaKhungMuonTra();
         ResumeLayout(false);
         PerformLayout();
 
