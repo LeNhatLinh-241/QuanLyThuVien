@@ -455,6 +455,11 @@ partial class ucUser
         this.pnlTableBorder.Name = "pnlTableBorder";
         this.pnlTableBorder.Padding = new System.Windows.Forms.Padding(1);
         this.pnlTableBorder.Size = new System.Drawing.Size(968, 398);
+        this.pnlTableBorder.Anchor =
+            System.Windows.Forms.AnchorStyles.Top |
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Left |
+            System.Windows.Forms.AnchorStyles.Right;
         this.pnlTableBorder.TabIndex = 1;
         // 
         // pnlTable
@@ -657,6 +662,9 @@ partial class ucUser
         this.lblHienThiBanGhi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
         this.lblHienThiBanGhi.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
         this.lblHienThiBanGhi.Location = new System.Drawing.Point(18, 362);
+        this.lblHienThiBanGhi.Anchor =
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Left;
         this.lblHienThiBanGhi.Name = "lblHienThiBanGhi";
         this.lblHienThiBanGhi.Size = new System.Drawing.Size(265, 15);
         this.lblHienThiBanGhi.TabIndex = 7;
@@ -672,6 +680,9 @@ partial class ucUser
         this.btnTrangTruoc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
         this.btnTrangTruoc.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
         this.btnTrangTruoc.Location = new System.Drawing.Point(780, 356);
+        this.btnTrangTruoc.Anchor =
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Right;
         this.btnTrangTruoc.Name = "btnTrangTruoc";
         this.btnTrangTruoc.Size = new System.Drawing.Size(66, 28);
         this.btnTrangTruoc.TabIndex = 8;
@@ -684,6 +695,9 @@ partial class ucUser
         this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
         this.lblTrangHienTai.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
         this.lblTrangHienTai.Location = new System.Drawing.Point(850, 356);
+        this.lblTrangHienTai.Anchor =
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Right;
         this.lblTrangHienTai.Name = "lblTrangHienTai";
         this.lblTrangHienTai.Size = new System.Drawing.Size(30, 28);
         this.lblTrangHienTai.TabIndex = 9;
@@ -700,6 +714,9 @@ partial class ucUser
         this.btnTrangSau.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
         this.btnTrangSau.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
         this.btnTrangSau.Location = new System.Drawing.Point(884, 356);
+        this.btnTrangSau.Anchor =
+            System.Windows.Forms.AnchorStyles.Bottom |
+            System.Windows.Forms.AnchorStyles.Right;
         this.btnTrangSau.Name = "btnTrangSau";
         this.btnTrangSau.Size = new System.Drawing.Size(64, 28);
         this.btnTrangSau.TabIndex = 10;

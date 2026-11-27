@@ -31,22 +31,21 @@ namespace QuanLyThuVien.UI.UserControls
         {
             // Tạo bố cục toàn màn hình: tiêu đề, nội dung và chân trang.
             SuspendLayout();
-
+            
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(241, 245, 249);
             Font = new Font("Segoe UI", 9F);
-            Size = new Size(1240, 760);
+            Size = new Size(1000, 664);
 
             var page = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(241, 245, 249),
                 ColumnCount = 1,
-                RowCount = 3,
+                RowCount = 1,
                 Padding = new Padding(12, 10, 12, 8)
             };
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
             page.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            page.RowStyles.Add(new RowStyle(SizeType.Absolute, 55));
 
             var header = new Panel
             {
@@ -79,14 +78,14 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
-                Padding = new Padding(0, 10, 0, 8),
+                Padding = new Padding(12, 8, 12, 8),
                 BackColor = Color.Transparent
             };
-            content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 470));
+            content.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 325));
             content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
             var categoriesPanel = CreateCategoriesPanel();
-            categoriesPanel.Margin = new Padding(0, 0, 10, 0);
+            categoriesPanel.Margin = new Padding(0, 0, 12, 0);
             content.Controls.Add(categoriesPanel, 0, 0);
             content.Controls.Add(CreateBookTitlesPanel(), 1, 0);
 
@@ -115,9 +114,9 @@ namespace QuanLyThuVien.UI.UserControls
                 ForeColor = Color.FromArgb(100, 116, 139)
             });
 
-            page.Controls.Add(header, 0, 0);
-            page.Controls.Add(content, 0, 1);
-            page.Controls.Add(footer, 0, 2);
+            
+            page.Controls.Add(content, 0, 0);
+            
             Controls.Add(page);
 
             ResumeLayout(false);
@@ -131,7 +130,7 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(10)
+                Padding = new Padding(12)
             };
             var layout = new TableLayoutPanel
             {
@@ -140,12 +139,12 @@ namespace QuanLyThuVien.UI.UserControls
                 RowCount = 4,
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30 ));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 22));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 46));
 
-            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH (CÂY PHÂN CẤP)"), 0, 0);
+            layout.Controls.Add(CreateSectionTitle("THỂ LOẠI SÁCH "), 0, 0);
             lblCategoryCount = new Label
             {
                 Text = "0 nhóm",
@@ -161,45 +160,58 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.FromArgb(248, 250, 252),
-                ForeColor = Color.FromArgb(51, 65, 85),
-                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                Font = new Font("Segoe UI", 9.25F),
                 HideSelection = false,
                 FullRowSelect = true,
                 ShowLines = true,
                 ShowPlusMinus = true,
                 ShowRootLines = true,
-                ItemHeight = 40,
+                ItemHeight = 28,
                 Indent = 18
             };
             layout.Controls.Add(tvTheLoai, 0, 2);
             
-            var buttons = new FlowLayoutPanel
+            var buttons = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false,
-                AutoScroll = false,
-                Padding = new Padding(0, 3, 0, 0),
-                Margin = Padding.Empty
+                ColumnCount = 3,
+                RowCount = 1,
+                Padding = new Padding(0, 6, 0, 4),
+                Margin = Padding.Empty,
+                BackColor = Color.White
             };
+            buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 28));
+            buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26));
+            buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 46));
+            buttons.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             
             btnThemTheLoai = CreateButton(
                 "Thêm",
                 Color.FromArgb(37, 99, 235),
                 Color.White,
-                120
+                0
             );
             btnThemTheLoai.Name = "btnThemTheLoai";
-            btnThemTheLoai.Height = 48;
+            btnThemTheLoai.Dock = DockStyle.Fill;
+            btnThemTheLoai.Margin = new Padding(0, 0, 4, 0);
+            btnThemTheLoai.Padding = Padding.Empty;
+            btnThemTheLoai.UseCompatibleTextRendering = true;
+            btnThemTheLoai.FlatAppearance.BorderSize = 0;
             btnThemTheLoai.Click += AddBookCategory;
 
             btnSuaTheLoai = CreateButton(
                 "Sửa",
                 Color.White,
                 Color.FromArgb(30, 41, 59),
-                90
+                0
             );
-            btnSuaTheLoai.Height = 48;
+            btnSuaTheLoai.Dock = DockStyle.Fill;
+            btnSuaTheLoai.Margin = new Padding(2, 0, 2, 0);
+            btnSuaTheLoai.Padding = Padding.Empty;
+            btnSuaTheLoai.UseCompatibleTextRendering = true;
+            btnSuaTheLoai.FlatAppearance.BorderSize = 1;
+            btnSuaTheLoai.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
             btnSuaTheLoai.Click += UpdateBookCategory;
 
             btnXoaTheLoai = CreateButton(
@@ -210,6 +222,12 @@ namespace QuanLyThuVien.UI.UserControls
             );
             // Gắn sự kiện xóa thể loại với nút Xóa trên giao diện.
             btnXoaTheLoai.Name = "btnXoaTheLoai";
+            btnXoaTheLoai.Dock = DockStyle.Fill;
+            btnXoaTheLoai.Margin = new Padding(4, 0, 0, 0);
+            btnXoaTheLoai.Padding = Padding.Empty;
+            btnXoaTheLoai.UseCompatibleTextRendering = true;
+            btnXoaTheLoai.FlatAppearance.BorderSize = 1;
+            btnXoaTheLoai.FlatAppearance.BorderColor = Color.FromArgb(239, 68, 68);
             btnXoaTheLoai.Click += DeleteBookCategory;
             
             foreach (Button btn in new[] { btnThemTheLoai, btnSuaTheLoai, btnXoaTheLoai })
@@ -219,9 +237,9 @@ namespace QuanLyThuVien.UI.UserControls
                 btn.Padding = new Padding(0);
             }
             
-            buttons.Controls.Add(btnThemTheLoai);
-            buttons.Controls.Add(btnSuaTheLoai);
-            buttons.Controls.Add(btnXoaTheLoai);
+            buttons.Controls.Add(btnThemTheLoai, 0, 0);
+            buttons.Controls.Add(btnSuaTheLoai, 1, 0);
+            buttons.Controls.Add(btnXoaTheLoai, 2, 0);
 
             layout.Controls.Add(buttons, 0, 3);
 
@@ -270,47 +288,50 @@ namespace QuanLyThuVien.UI.UserControls
                 RowCount = 4,
                 BackColor = Color.White
             };
-            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70));
-            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
-            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 57));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 56));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
+            titleLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
             titleLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             var titleHeader = new Panel { Dock = DockStyle.Fill };
-            titleHeader.Controls.Add(CreateSectionTitle("ĐẦU SÁCH - BookTitles"));
-            titleHeader.Controls.Add(new Label
-            {
-                Text = "Đang chọn: SACH01",
-                Dock = DockStyle.Right,
-                Width = 300,
-                TextAlign = ContentAlignment.MiddleRight,
-                ForeColor = Color.FromArgb(100, 116, 139)
-            });
+            titleHeader.Controls.Add(CreateSectionTitle("ĐẦU SÁCH "));
             titleLayout.Controls.Add(titleHeader, 0, 0);
             titleLayout.Controls.Add(CreateBookFields(), 0, 1);
+            // titleHeader.Controls.Add(new Label
+           // {
+           //     Text = "Đang chọn: SACH01",
+            //    Dock = DockStyle.Right,
+            //    Width = 300,
+            //    TextAlign = ContentAlignment.MiddleRight,
+            //    ForeColor = Color.FromArgb(100, 116, 139)
+          //  });
 
             var buttons = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(0, 2, 0, 0)
+                Padding = new Padding(0, 4, 0, 2),
+                Margin = Padding.Empty
             };
             btnThemDauSach = CreateButton(
                 "+ Thêm & Sinh mã vạch",
                 Color.FromArgb(37, 99, 235),
                 Color.White,
-                305
+                195
             );
-            btnThemDauSach.Height = 50;
+            btnThemDauSach.Height = 32;
+            btnThemDauSach.Margin = new Padding(0, 0, 6, 0);
             btnThemDauSach.Click += AddBookTitleAndCopies;
             
             btnSuaDauSach = CreateButton(
                 "Sửa",
                 Color.White,
                 Color.FromArgb(30, 41, 59),
-                70
+                74
             );
-            btnSuaDauSach.Height = 48;
+            btnSuaDauSach.Height = 32;
+            btnSuaDauSach.Margin = new Padding(0, 0, 6, 0);
             btnSuaDauSach.Click += UpdateSelectedBookTitle;
             
             btnXoaDauSach = CreateButton(
@@ -319,7 +340,8 @@ namespace QuanLyThuVien.UI.UserControls
                 Color.FromArgb(220, 38, 38),
                 66
             );
-            btnXoaDauSach.Height = 48;
+            btnXoaDauSach.Height = 32;
+            btnXoaDauSach.Margin = Padding.Empty;
             btnXoaDauSach.Click += DeleteSelectedBookTitle;
             
             buttons.Controls.Add(btnThemDauSach);
@@ -366,7 +388,7 @@ namespace QuanLyThuVien.UI.UserControls
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
 
             var header = new Panel { Dock = DockStyle.Fill };
-            header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ - BookCopies"));
+            header.Controls.Add(CreateSectionTitle("CUỐN SÁCH VẬT LÝ "));
             lblPhysicalCopiesHeader = new Label
             {
                 Text = "Mã vạch sinh tự động cho SACH01",
@@ -460,14 +482,15 @@ namespace QuanLyThuVien.UI.UserControls
                 ColumnCount = 5,
                 RowCount = 1,
                 BackColor = Color.White,
-                Margin = Padding.Empty
+                Margin = Padding.Empty,
+                Padding = Padding.Empty
             };
 
-            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
+            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19));
             fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15));
-            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 23));
-            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18));
+            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 24));
+            fields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16));
             
             txtTenDauSach = new TextBox
             {
@@ -498,6 +521,7 @@ namespace QuanLyThuVien.UI.UserControls
                 BackColor = Color.White,
                 ForeColor = Color.FromArgb(30, 41, 59),
                 Font = new Font("Segoe UI", 9F),
+                Height = 28,
                 IntegralHeight = true,
                 DropDownHeight = 150,
                 MaxDropDownItems = 5,
@@ -531,20 +555,22 @@ namespace QuanLyThuVien.UI.UserControls
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 2,
-                Margin = new Padding(2, 0, 5, 0),
+                Margin = new Padding(0, 0, 8, 0),
+                Padding = Padding.Empty,
                 BackColor = Color.White
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 32));
             layout.Controls.Add(new Label
             {
                 Text = label,
+                Font = new Font("Segoe UI", 9F),
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleLeft,
-                ForeColor = Color.FromArgb(51, 65, 85)
+                ForeColor = Color.FromArgb(51, 65, 85),
+                Margin = Padding.Empty
             }, 0, 0);
-            editor.Margin = new Padding(0, 0, 0, 2);
-
+            
             if (editor is ComboBox combo)
             {
                 combo.Dock = DockStyle.Fill;
@@ -554,6 +580,9 @@ namespace QuanLyThuVien.UI.UserControls
             {
                 editor.Dock = DockStyle.Fill;
             }
+            editor.Height = 28;
+            editor.Dock = DockStyle.Top;
+            editor.Margin = new Padding(0, 2, 0, 0);
             layout.Controls.Add(editor, 0, 1);
             return layout;
         }
